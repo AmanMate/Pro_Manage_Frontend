@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { registerUser } from "../../api/auth";
+import { loginUser } from "../../api/auth";
 import Art from "../../assets/images/Art.png"
 
 export default function Login() {
@@ -66,7 +67,7 @@ export default function Login() {
           <>
             <button
               className="login-button"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit('login')}
               // disabled={true}
               style={{
                 backgroundColor: "#17A2B8",
@@ -79,7 +80,7 @@ export default function Login() {
             <div className="havent-dv">Have no account yet?</div>
             <button
               className="signup-button"
-              onClick={() => setActiveForm("signIn")}
+              onClick={() => setActiveForm('signUp')}
               style={{
                 backgroundColor: "white",
                 color: "#17A2B8",
@@ -93,7 +94,7 @@ export default function Login() {
           <>
             <button
               className="signup-button"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit('register')}
               // disabled={true}
               style={{
                 backgroundColor: "#17A2B8",
@@ -106,7 +107,7 @@ export default function Login() {
             <div className="havent-dv">Have an account?</div>
             <button
               className="login-button"
-              onClick={handleSubmit}
+              onClick={() => setActiveForm("signIn")}
               style={{
                 backgroundColor: "white",
                 color: "#17A2B8",
@@ -122,3 +123,6 @@ export default function Login() {
   </div>
   );
 }
+
+
+// () => setActiveForm("signIn")
