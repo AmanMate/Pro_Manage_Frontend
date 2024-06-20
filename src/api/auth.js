@@ -1,6 +1,6 @@
 import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-const backendUrl = `http://127.0.0.1:4002/api/v1/auth`;
+const backendUrl = `http://localhost:4002/api/v1/auth`;
 
 export const registerUser = async ({ name, email, password }) => {
     
@@ -12,12 +12,12 @@ export const registerUser = async ({ name, email, password }) => {
               "Content-Type": "application/json",
             },
             data: JSON.stringify({
-              name: name,
-              email: email,
-              password: password
+              name,
+              email,
+              password,
             }),
           });
-        
+        return;
     } catch (error) {
         console.log(error);
         alert("Something went wrong")
@@ -35,16 +35,40 @@ export const loginUser = async ({ email, password }) => {
               "Content-Type": "application/json",
             },
             data: JSON.stringify({
-              email: email,
-              password: password
+              email,
+              password,
             }),
           });
-        //   if(res.status(200)){
-        //     navigate("/dashboard");
-        //   }
+          // if(res.status(200)){
+          //   navigate("/dashboard");
+          // }
+
+        return true;
     } catch (error) {
         console.log(error);
         alert("Something went wrong")
     }
 }
+
+export const updateUser = async ({ name, email, password }) => {
+    
+  try {
+      await axios(`${backendUrl}/settings`, {
+          action: " ",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: JSON.stringify({
+            name,
+            email,
+            password,
+          }),
+        });
+      return;
+  } catch (error) {
+      console.log(error);
+      alert("Something went wrong")
+  }
+};
 

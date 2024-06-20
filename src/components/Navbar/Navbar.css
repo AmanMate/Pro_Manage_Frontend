@@ -1,0 +1,40 @@
+a {
+    cursor: pointer;
+}
+
+
+.nav-wrapper {
+    border: 1px solid #EDF5FE;
+    width: 224px;
+    height: 100vh;
+}
+
+.logo-name {
+    display: flex;
+    margin: 32px 43px;
+}
+
+.nav-wrapper img {
+    height: 24px;
+    width: 24px;
+    margin-right: 20px;
+}
+
+.nav-wrapper h1 {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    margin: 0px;
+    line-height: 24px;
+}
+
+.submenu {
+    display: flex;
+    padding: 20px 43px;
+}
+
+.logout {
+    color: #CF3636;
+    position: absolute;
+    bottom: 30px;
+}

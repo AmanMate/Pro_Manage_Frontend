@@ -1,0 +1,29 @@
+.Nav-Board {
+    display: flex;
+}
+
+.board-page {
+    width: 180px;
+}
+
+.welcome-name {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 43.5px;
+    /* text-align: left; */
+}
+
+.board-text {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 90.5px;
+    /* text-align: left; */
+}
+
+.Nav-Board .board-page {
+    margin-block: 7px;
+    font-size: 33.08px;
+    font-weight: 600;
+    /* line-height: 45.04px; */
+    text-align: center;
+}
