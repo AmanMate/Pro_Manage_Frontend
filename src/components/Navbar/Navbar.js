@@ -11,6 +11,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [active, setActive] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     setActive(location.pathname.substring(1));
@@ -19,6 +20,20 @@ export default function Navbar() {
   const handleNavigation = (path, name) => {
     setActive(name);
     navigate(path);
+  };
+
+  const handleLogoutClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleCancelClick = () => {
+    setShowPopup(false);
+  };
+
+  const handleConfirmLogout = () => {
+    // Perform logout logic here, like clearing user session
+    setShowPopup(false);
+    navigate("/login");
   };
 
   return (
@@ -52,10 +67,24 @@ export default function Navbar() {
         </a>
       </nav>
 
-      <a className="logout submenu">
+      <a className="logout submenu" onClick={handleLogoutClick}>
         <img src={Logout} alt="Logout" />
         <p className="logout-text">Logout</p>
       </a>
+
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <p>Are you sure you want to Logout?</p>
+            <button className="popup-confirm-button" onClick={handleConfirmLogout}>
+              Yes, Logout
+            </button>
+            <button className="popup-cancel-button" onClick={handleCancelClick}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
