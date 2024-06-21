@@ -1,54 +1,61 @@
 .Nav-Settings {
-    display: flex;
-    /* flex-direction: column; */
-  }
-  
-  .Navbar {
-    margin-bottom: 20px;
-  }
-  
-  .settings {
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-  }
-  
-  .sett-text {
-    margin-left: 60px ;
-    margin-bottom: 20px;
-  }
-  
-  .allInputs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .input-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .input-icon {
-    position:absolute;
-    left: 70px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-  }
-  
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px 10px 10px 50px; /* Adjust padding for icon space */
-    box-sizing: border-box;
-  }
-  
-  .updateBtn {
-    margin-top: 20px;
-    padding: 10px 20px;
-  }
-  
+  display: flex;
+}
+
+.Navbar {
+  margin-bottom: 20px;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sett-text {
+  margin-bottom: 10px;
+  margin-left: 58px;
+  font-size:x-large;
+}
+
+.allInputs {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  flex: 1;
+}
+
+.input-icon {
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px 10px 10px 50px; 
+  box-sizing: border-box;
+}
+
+.updateBtn {
+  margin-top: 20px;
+  margin-left: 58px;
+  padding: 10px 20px;
+  max-width: 400px;
+  width: 100%;
+  color: white;
+  background: #17A2B8;
+  border: 1px solid #D0D0D0;
+}

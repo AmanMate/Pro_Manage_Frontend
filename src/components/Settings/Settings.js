@@ -3,8 +3,8 @@ import Navbar from "../Navbar/Navbar";
 import "./Settings.css";
 import User from "../../assets/icons/Frame 1036.png";
 import Email from "../../assets/icons/mdi-light_email.png";
-import oldPassword from "../../assets/icons/lock.png";
-import newPassword from "../../assets/icons/lock.png";
+import Password from "../../assets/icons/lock.png";
+
 
 export default function Settings() {
   const [updateData, setUpdateData] = useState({
@@ -29,7 +29,7 @@ export default function Settings() {
       </div>
       <div className="settings">
         <div className="sett-text">
-          <h1>Settings</h1>
+          <p>Settings</p>
         </div>
         <div className="allInputs">
           <div className="input-wrapper">
@@ -41,11 +41,11 @@ export default function Settings() {
             <input type="email" name="email" placeholder="Update Email" onChange={handleUpdate} />
           </div>
           <div className="input-wrapper">
-            <img src={oldPassword} alt="Old Password Icon" className="input-icon" />
+            <img src={Password} alt="Old Password Icon" className="input-icon" />
             <input type="password" name="oldPassword" placeholder="Old Password" onChange={handleUpdate} />
           </div>
           <div className="input-wrapper">
-            <img src={newPassword} alt="New Password Icon" className="input-icon" />
+            <img src={Password} alt="New Password Icon" className="input-icon" />
             <input type="password" name="newPassword" placeholder="New Password" onChange={handleUpdate} />
           </div>
         </div>
