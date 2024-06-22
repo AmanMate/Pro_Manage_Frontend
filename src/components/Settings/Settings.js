@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
+import { updateUser } from "../../api/auth";
 import "./Settings.css";
 import User from "../../assets/icons/Frame 1036.png";
 import Email from "../../assets/icons/mdi-light_email.png";
@@ -19,7 +20,13 @@ export default function Settings() {
   };
 
   const handleUpdateSubmit = async () => {
-    // Add your submit logic here
+    try {
+      await updateUser(updateData);
+      alert("User updated successfully");
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Something went wrong");
+    }
   };
 
   return (

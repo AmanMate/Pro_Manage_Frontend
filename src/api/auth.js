@@ -1,9 +1,8 @@
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 const backendUrl = `http://localhost:4002/api/v1/auth`;
 
 export const registerUser = async ({ name, email, password }) => {
-    
+
     try {
         await axios(`${backendUrl}/register`, {
             action: " ",
@@ -24,8 +23,8 @@ export const registerUser = async ({ name, email, password }) => {
     }
 };
 
+
 export const loginUser = async ({ email, password }) => {
-    // const navigate = useNavigate();
 
     try {
         await axios(`${backendUrl}/login`, {
@@ -39,10 +38,6 @@ export const loginUser = async ({ email, password }) => {
               password,
             }),
           });
-          // if(res.status(200)){
-          //   navigate("/dashboard");
-          // }
-
         return true;
     } catch (error) {
         console.log(error);
@@ -50,19 +45,21 @@ export const loginUser = async ({ email, password }) => {
     }
 }
 
-export const updateUser = async ({ name, email, password }) => {
+
+export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
     
   try {
       await axios(`${backendUrl}/settings`, {
           action: " ",
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           data: JSON.stringify({
             name,
             email,
-            password,
+            oldPassword,
+            newPassword,
           }),
         });
       return;
