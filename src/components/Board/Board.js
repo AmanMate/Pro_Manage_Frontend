@@ -4,14 +4,14 @@ import "./Board.css";
 import database1 from "../../assets/icons/database1.png";
 import Group544 from "../../assets/icons/Group544.png";
 import Stroke1 from "../../assets/icons/Stroke1.png";
-// import Ellipse3 from "../../assets/icons/Ellipse3.png";
 import Vector14 from "../../assets/icons/Vector 14.png";
 import codicon_collapse from "../../assets/icons/codicon_collapse-all.png";
-import AddTask from "./AddTask"
- 
+import AddTask from "./AddTask";
 
 export default function Board() {
   const [show, setShow] = useState(false);
+  const [tasks, setTasks] = useState([]);
+
   const showModal = () => {
     setShow(true);
   };
@@ -31,418 +31,117 @@ export default function Board() {
 
   const checkedCount = Object.values(checkboxes).filter(Boolean).length;
 
+  const addNewTask = (task) => {
+    setTasks([...tasks, task]);
+  };
+
   return (
     <div style={{ display: 'flex' }}>
-        <Navbar />
-      <div class="wrapper-board">
-        <div class="top-row">
-          <div class="welcome">
+      <Navbar />
+      <div className="wrapper-board">
+        <div className="top-row">
+          <div className="welcome">
             <p>Welcome Kumar</p>
           </div>
-          <div class="date">
+          <div className="date">
             <p>12th Jan, 2024</p>
           </div>
         </div>
-        <div class="second-row">
-          <div class="left">
+        <div className="second-row">
+          <div className="left">
             <h2>Board</h2>
-            <div class="add-people">
+            <div className="add-people">
               <img src={database1} alt="ig" />
               <button onClick={() => setShow(true)}>Add People</button>
             </div>
             {show && (
-              <div class="modal-wrapper">
-                <div class="container">
+              <div className="modal-wrapper">
+                <div className="container">
                   <p>Add people to the board</p>
                   <input placeholder="Enter the email" />
-                  <div class="email-add-buttons">
+                  <div className="email-add-buttons">
                     <button
                       onClick={() => setShow(false)}
-                      class="add-email-cancel-button"
+                      className="add-email-cancel-button"
                     >
                       Cancel
                     </button>
-                    <button class="add-email-add-button">Add Email</button>
+                    <button className="add-email-add-button">Add Email</button>
                   </div>
                 </div>
               </div>
             )}
           </div>
-          <div class="right">
+          <div className="right">
             <p>This week</p>
             <img src={Vector14} alt="arrow"></img>
           </div>
         </div>
-        <div class="board-row">
-          <div class="board-backlog">
-            <div class="backlog-board-row1">
+        <div className="board-row">
+          <div className="board-backlog">
+            <div className="backlog-board-row1">
               <h3>Backlog</h3>
               <img src={codicon_collapse} alt="colapse" />
             </div>
-            <div class="backlog-board-row2">
-              <div class="card-section">
-                <div class="priority-edit-row">
-                  <div
-                    className="small-circle"
-                    style={{ backgroundColor: "red" }}
-                  ></div>
-
-                  <div class="priority">High Priority</div>
-
-                  <div class="edit">
-                    <button>
-                      <img src={Group544} />
-                    </button>
-                  </div>
-                </div>
-                <h2>Hero section</h2>
-
-                <div class="checklist-and-arrow">
-                  <p>
-                    Checklist ({checkedCount}/{Object.values(checkboxes).length}
-                    )
-                  </p>
-                  <button>
-                    <img src={Stroke1} alt="dropdown" />
-                  </button>
-                </div>
-
-                <div class="checklist">
-                  <div class="checklist-options">
-                    <input
-                      name="box1"
-                      checked={checkboxes.box1}
-                      onChange={handleCheckboxChange}
-                      class="checklist-member"
-                      type="checkbox"
-                    />
-                    <label for="item1">Task to be done</label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box2"
-                        checked={checkboxes.box2}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box3"
-                        checked={checkboxes.box3}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="backlog-board-row2">
-              <div class="card-section">
-                <div class="priority-edit-row">
-                  <div class="small-circle"></div>
-                  <div class="priority">High Priority</div>
-
-                  <div class="edit">
-                    <button>
-                      <img src={Group544} />
-                    </button>
-                  </div>
-                </div>
-                <h2>Hero section</h2>
-
-                <div class="checklist-and-arrow">
-                  <p>
-                    Checklist ({checkedCount}/{Object.values(checkboxes).length}
-                    )
-                  </p>
-                  <button>
-                    <img src={Stroke1} alt="dropdown" />
-                  </button>
-                </div>
-
-                <div class="checklist">
-                  <div class="checklist-options">
-                    <input
-                      name="box1"
-                      checked={checkboxes.box1}
-                      onChange={handleCheckboxChange}
-                      class="checklist-member"
-                      type="checkbox"
-                    />
-                    <label for="item1">Task to be done</label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box2"
-                        checked={checkboxes.box2}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box3"
-                        checked={checkboxes.box3}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-          <div class="board-backlog">
-            <div class="backlog-board-row1">
+          <div className="board-backlog">
+            <div className="backlog-board-row1">
               <h3>To-Do list</h3>
-              <AddTask />
-              <img src={codicon_collapse} alt="colapse" />
+              <AddTask addNewTask={addNewTask} />
+              <img src={codicon_collapse} alt="collapse" />
             </div>
-            <div class="backlog-board-row2">
-              <div class="card-section">
-                <div class="priority-edit-row">
-                  <div
-                    className="small-circle"
-                    style={{ backgroundColor: "red" }}
-                  ></div>
-
-                  <div class="priority">High Priority</div>
-
-                  <div class="edit">
+            <div className="backlog-board-row2">
+              {tasks.map((task) => (
+                <div key={task.id} className="card-section">
+                  <div className="priority-edit-row">
+                    <div
+                      className="small-circle"
+                      style={{ backgroundColor: task.priority === "High" ? "red" : "green" }}
+                    ></div>
+                    <div className="priority">{task.priority} Priority</div>
+                    <div className="edit">
+                      <button>
+                        <img src={Group544} alt="edit" />
+                      </button>
+                    </div>
+                  </div>
+                  <h2>{task.title}</h2>
+                  <div className="checklist-and-arrow">
+                    <p>
+                      Checklist ({task.checklistItems.filter(item => item.checked).length}/{task.checklistItems.length})
+                    </p>
                     <button>
-                      <img src={Group544} />
+                      <img src={Stroke1} alt="dropdown" />
                     </button>
                   </div>
-                </div>
-                <h2>Hero section</h2>
-
-                <div class="checklist-and-arrow">
-                  <p>
-                    Checklist ({checkedCount}/{Object.values(checkboxes).length}
-                    )
-                  </p>
-                  <button>
-                    <img src={Stroke1} alt="dropdown" />
-                  </button>
-                </div>
-
-                <div class="checklist">
-                  <div class="checklist-options">
-                    <input
-                      name="box1"
-                      checked={checkboxes.box1}
-                      onChange={handleCheckboxChange}
-                      class="checklist-member"
-                      type="checkbox"
-                    />
-                    <label for="item1">Task to be done</label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box2"
-                        checked={checkboxes.box2}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box3"
-                        checked={checkboxes.box3}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
+                  <div className="checklist">
+                    {task.checklistItems.map((item) => (
+                      <div key={item.id} className="checklist-options">
+                        <input
+                          name={item.id}
+                          checked={item.checked}
+                          onChange={handleCheckboxChange}
+                          className="checklist-member"
+                          type="checkbox"
+                        />
+                        <label htmlFor={item.id}>{item.text}</label>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-          <div class="board-backlog">
-            <div class="backlog-board-row1">
-              <h3>In-Progress</h3>
+          <div className="board-backlog">
+            <div className="backlog-board-row1">
+              <h3>In Progress</h3>
               <img src={codicon_collapse} alt="colapse" />
             </div>
-            <div class="backlog-board-row2">
-              <div class="card-section">
-                <div class="priority-edit-row">
-                  <div
-                    className="small-circle"
-                    style={{ backgroundColor: "red" }}
-                  ></div>
-
-                  <div class="priority">High Priority</div>
-
-                  <div class="edit">
-                    <button>
-                      <img src={Group544} />
-                    </button>
-                  </div>
-                </div>
-                <h2>Hero section</h2>
-
-                <div class="checklist-and-arrow">
-                  <p>
-                    Checklist ({checkedCount}/{Object.values(checkboxes).length}
-                    )
-                  </p>
-                  <button>
-                    <img src={Stroke1} alt="dropdown" />
-                  </button>
-                </div>
-
-                <div class="checklist">
-                  <div class="checklist-options">
-                    <input
-                      name="box1"
-                      checked={checkboxes.box1}
-                      onChange={handleCheckboxChange}
-                      class="checklist-member"
-                      type="checkbox"
-                    />
-                    <label for="item1">Task to be done</label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box2"
-                        checked={checkboxes.box2}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box3"
-                        checked={checkboxes.box3}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-          <div class="board-backlog">
-            <div class="backlog-board-row1">
+          <div className="board-backlog">
+            <div className="backlog-board-row1">
               <h3>Completed</h3>
-              <img src={codicon_collapse} alt="colapse" />
-            </div>
-            <div class="backlog-board-row2">
-              <div class="card-section">
-                <div class="priority-edit-row">
-                  <div
-                    className="small-circle"
-                    style={{ backgroundColor: "red" }}
-                  ></div>
-
-                  <div class="priority">High Priority</div>
-
-                  <div class="edit">
-                    <button>
-                      <img src={Group544} />
-                    </button>
-                  </div>
-                </div>
-                <h2>Hero section</h2>
-
-                <div class="checklist-and-arrow">
-                  <p>
-                    Checklist ({checkedCount}/{Object.values(checkboxes).length}
-                    )
-                  </p>
-                  <button>
-                    <img src={Stroke1} alt="dropdown" />
-                  </button>
-                </div>
-
-                <div class="checklist">
-                  <div class="checklist-options">
-                    <input
-                      name="box1"
-                      checked={checkboxes.box1}
-                      onChange={handleCheckboxChange}
-                      class="checklist-member"
-                      type="checkbox"
-                    />
-                    <label for="item1">Task to be done</label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box2"
-                        checked={checkboxes.box2}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                  <div class="checklist-options">
-                    <div class="input">
-                      <input
-                        name="box3"
-                        checked={checkboxes.box3}
-                        onChange={handleCheckboxChange}
-                        class="checklist-member"
-                        type="checkbox"
-                      />
-                    </div>
-                    <label for="item1">
-                      Task to be done ede lorem Ipsum is a Dummy text t
-                    </label>
-                  </div>
-                </div>
-              </div>
+              <img src={codicon_collapse} alt="completed" />
             </div>
           </div>
         </div>

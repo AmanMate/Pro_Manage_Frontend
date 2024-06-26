@@ -27,6 +27,7 @@ export default function Settings() {
       console.error("Update failed:", error);
       alert("Something went wrong");
     }
+    console.log(localStorage.getItem("email"));
   };
 
   return (

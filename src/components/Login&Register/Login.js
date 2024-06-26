@@ -61,6 +61,8 @@ export default function Login() {
     }
     try {
       const result = await loginUser(loginFormData);
+      console.log(loginFormData.email);
+      localStorage.setItem("email", loginFormData.email);
       if (result) {
         navigate("/board");
       }
