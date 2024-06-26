@@ -31,9 +31,7 @@ export default function Settings() {
 
   return (
     <div className="Nav-Settings">
-      <div className="Navbar">
-        <Navbar />
-      </div>
+      <Navbar />
       <div className="settings">
         <div className="sett-text">
           <p>Settings</p>

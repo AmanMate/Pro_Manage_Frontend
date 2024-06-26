@@ -5,9 +5,7 @@ import "./Analytics.css";
 export default function Analytics() {
     return (
         <div className="Nav-Analytics">
-            <div className="Navbar">
-                <Navbar />
-            </div>
+            <Navbar />
             <div className="Analytics">
                 <h1>Analytics</h1>
                 <div className="analystics-boxes">

@@ -1,15 +1,11 @@
 .Nav-Settings {
   display: flex;
-}
-
-.Navbar {
-  margin-bottom: 20px;
+  width: 100%;
 }
 
 .settings {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
 .sett-text {
