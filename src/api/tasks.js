@@ -10,7 +10,7 @@ export const createTask = async(taskPayload) => {
               "Content-Type": "application/json",
             },
             data: JSON.stringify({
-             //data
+             taskPayload,
             }),
           });
         return;

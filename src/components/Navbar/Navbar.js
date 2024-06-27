@@ -31,7 +31,6 @@ export default function Navbar() {
   };
 
   const handleConfirmLogout = () => {
-    // Perform logout logic here, like clearing user session
     setShowPopup(false);
     navigate("/login");
   };
