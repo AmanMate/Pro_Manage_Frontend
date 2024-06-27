@@ -1,63 +1,80 @@
 import React, { useState } from "react";
-import Add from "../../assets/icons/Group 10.png";
+import { createTask } from "../../api/tasks";
 import "./AddTask.css";
+import { DEFAULT_SKILLS } from "../../utils/constant";
 
 const AddTask = ({ addNewTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState("");
-  const [assignee, setAssignee] = useState("");
-  const [checklistItems, setChecklistItems] = useState([]);
+  const [formData, setFormData] = useState({
+    title: "",
+    priority: "",
+    assignee: "",
+    checklistItems: [],
+    dueDate: "",
+  });
 
-  const handleClick = () => {
-    setIsModalOpen(true);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
-  const closeModal = () => {
+  const handleSubmit = () => {
+    const { title, priority, checklistItems } = formData;
+
+    if (!title || !priority || !checklistItems.length ) {
+      alert("Please fill in all required fields and checklist items.");
+      return;
+    }
+
+    // Perform further task creation logic here, e.g., call createTask API
+    addNewTask(formData);
     setIsModalOpen(false);
-    setTitle("");
-    setPriority("");
-    setAssignee("");
-    setChecklistItems([]);
+    setFormData({
+      title: "",
+      priority: "",
+      assignee: "",
+      checklistItems: [],
+      dueDate: "",
+    });
+  };
+
+  const handleDeleteChecklistItem = (index) => {
+    const updatedItems = formData.checklistItems.filter((_, i) => i !== index);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      checklistItems: updatedItems,
+    }));
+  };
+
+  const handleToggleChecklistItem = (index) => {
+    const updatedItems = [...formData.checklistItems];
+    updatedItems[index].checked = !updatedItems[index].checked;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      checklistItems: updatedItems,
+    }));
   };
 
   const handleAddChecklistItem = () => {
-    const newItems = [...checklistItems, { id: Date.now(), text: "" }];
-    setChecklistItems(newItems);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      checklistItems: [
+        ...prevFormData.checklistItems,
+        { text: "", checked: false },
+      ],
+    }));
   };
 
-  const handleDeleteChecklistItem = (id) => {
-    const updatedItems = checklistItems.filter((item) => item.id !== id);
-    setChecklistItems(updatedItems);
-  };
-
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handlePriorityChange = (value) => {
-    setPriority(value);
-  };
-
-  const handleAssigneeChange = (event) => {
-    setAssignee(event.target.value);
-  };
-
-  const handleSaveTask = () => {
-    const newTask = {
-      id: Date.now(),
-      title,
-      priority,
-      assignee,
-      checklistItems,
-    };
-    addNewTask(newTask);
-    closeModal();
-  };
+  // Calculate the number of selected checklist items
+  const selectedCount = formData.checklistItems.filter((item) => item.checked).length;
+  const totalCount = formData.checklistItems.length;
 
   return (
     <div>
-      <button className="add-task" onClick={handleClick}></button>
+      <button className="add-task" onClick={() => setIsModalOpen(true)}></button>
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -70,8 +87,8 @@ const AddTask = ({ addNewTask }) => {
                 <input
                   type="text"
                   name="title"
-                  value={title}
-                  onChange={handleTitleChange}
+                  value={formData.title}
+                  onChange={handleChange}
                   placeholder="Enter Task Title"
                   required
                 />
@@ -84,27 +101,39 @@ const AddTask = ({ addNewTask }) => {
                   <button
                     type="button"
                     className={`priority-button ${
-                      priority === "high" ? "active" : ""
+                      formData.priority === "high" ? "active" : ""
                     }`}
-                    onClick={() => handlePriorityChange("high")}
+                    onClick={() =>
+                      handleChange({
+                        target: { name: "priority", value: "high" },
+                      })
+                    }
                   >
                     High Priority
                   </button>
                   <button
                     type="button"
                     className={`priority-button ${
-                      priority === "medium" ? "active" : ""
+                      formData.priority === "moderate" ? "active" : ""
                     }`}
-                    onClick={() => handlePriorityChange("medium")}
+                    onClick={() =>
+                      handleChange({
+                        target: { name: "priority", value: "moderate" },
+                      })
+                    }
                   >
                     Moderate Priority
                   </button>
                   <button
                     type="button"
                     className={`priority-button ${
-                      priority === "low" ? "active" : ""
+                      formData.priority === "low" ? "active" : ""
                     }`}
-                    onClick={() => handlePriorityChange("low")}
+                    onClick={() =>
+                      handleChange({
+                        target: { name: "priority", value: "low" },
+                      })
+                    }
                   >
                     Low Priority
                   </button>
@@ -114,8 +143,8 @@ const AddTask = ({ addNewTask }) => {
                 <span>Assign to</span>
                 <select
                   name="assignee"
-                  value={assignee}
-                  onChange={handleAssigneeChange}
+                  value={formData.assignee}
+                  onChange={handleChange}
                 >
                   <option value="" disabled>
                     Select an assignee
@@ -127,35 +156,38 @@ const AddTask = ({ addNewTask }) => {
               </label>
               <label className="Checklist">
                 <span>
-                  Checklist ({checklistItems.length}){" "}
+                  Checklist ({selectedCount}/{totalCount})
                 </span>
                 <div className="checklist-items">
-                  {checklistItems.map((item, index) => (
-                    <div key={item.id} className="checklist-item">
+                  {formData.checklistItems.map((item, index) => (
+                    <div key={index} className="checklist-item">
                       <div className="checklist-input">
                         <input
                           type="checkbox"
-                          id={`item-${item.id}`}
                           checked={item.checked || false}
-                          onChange={() => {}}
+                          onChange={() => handleToggleChecklistItem(index)}
                           className="checklist-checkbox"
                         />
                         <input
                           type="text"
                           value={item.text}
                           onChange={(e) => {
-                            const updatedItems = [...checklistItems];
+                            const updatedItems = [...formData.checklistItems];
                             updatedItems[index].text = e.target.value;
-                            setChecklistItems(updatedItems);
+                            setFormData((prevFormData) => ({
+                              ...prevFormData,
+                              checklistItems: updatedItems,
+                            }));
                           }}
                           placeholder="Enter item text"
                           className="checklist-text"
                         />
                         <button
                           type="button"
-                          onClick={() => handleDeleteChecklistItem(item.id)}
+                          onClick={() => handleDeleteChecklistItem(index)}
                           className="delete-button"
-                        ></button>
+                        >
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -169,12 +201,17 @@ const AddTask = ({ addNewTask }) => {
                 </button>
               </label>
               <label className="dueDate">
-                <button type="button">Select Due Date</button>
+                <input
+                  type="date"
+                  name="dueDate"
+                  value={formData.dueDate}
+                  onChange={handleChange}
+                />
               </label>
-              <button type="button" onClick={handleSaveTask}>
+              <button type="button" onClick={handleSubmit}>
                 Save
               </button>
-              <button type="button" onClick={closeModal}>
+              <button type="button" onClick={() => setIsModalOpen(false)}>
                 Close
               </button>
             </form>
