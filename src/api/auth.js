@@ -41,7 +41,7 @@ export const loginUser = async ({ email, password }) => {
           if (response.data?.token){
             localStorage.setItem("token", JSON.stringify(response.data?.token));
             localStorage.setItem("name", JSON.stringify(response.data?.name));
-            localStorage.setItem("userId", JSON.stringify(response.data?.userId));
+            localStorage.setItem("userId", (response.data?.userId));
           }
         return true;
     } catch (error) {
@@ -54,7 +54,9 @@ export const loginUser = async ({ email, password }) => {
 export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
     console.log('name ->', name);
     console.log('email ->', email);
+    console.log('userId ->', localStorage.getItem("userId"));
   try {
+    const userId = localStorage.getItem("userId");
     const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
       await axios(`${backendUrl}/settings`, {
@@ -68,6 +70,7 @@ export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
             email,
             oldPassword,
             newPassword,
+            userId
           }),
         });
       return;
@@ -78,19 +81,18 @@ export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
 };
 
 
-export const getUserDetails = async (oldEmail, oldName) => {
+export const getUserDetails = async (email) => {
   const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios(`${backendUrl}/settings`, {
+    const response = await axios(`${backendUrl}/getUserDetails`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      params: {
-        oldEmail,
-        oldName,
-      },
+      data: JSON.stringify({
+        email       
+      }),
     });
     return response.data;
   } catch (error) {
