@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `http://localhost:4002/api/v1/task`;
+const backendUrl = `https://pro-manage-back-end.onrender.com/api/v1/task`;
 
 export const createTask = async ({ title, priority, assignee, checklistItems, dueDate }) => {
   try {
