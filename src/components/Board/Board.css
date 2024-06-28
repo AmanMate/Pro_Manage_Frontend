@@ -16,7 +16,8 @@
 .add-people,
 .email-add-buttons,
 .checklist-and-arrow,
-.priority-edit-row {
+.priority-edit-row,
+.display-flex {
     display: flex;
     justify-content: space-between;
 }
@@ -241,7 +242,7 @@
     line-height: 12px;
     text-align: left;
     height: 15px;
-    transform: translate(-93px, -2px);
+    transform: translate(-85px, -3px);
 }
 
 .board-backlog {
@@ -262,4 +263,45 @@
 ::-webkit-scrollbar-thumb {
     background: #8DAAB9CC;
     border-radius: 10px;
+}
+
+.done-button button,
+.to-do-button button,
+.progress-button button,
+.date-button button {
+    font-weight: 500;
+    line-height: 12px;
+    text-align: left;
+    border: none;
+    background: #EEECEC;
+    border-radius: 10px;
+    color: #767575;
+    font-size: 10px;
+    margin: 5px 8px;
+    text-align: center;
+}
+
+.date-button button {
+    width: 67px;
+    height: 35px;
+}
+
+.progress-button button {
+    width: 59px;
+    height: 35px;
+}
+
+.done-button button {
+    width: 52px;
+    height: 35px;
+}
+
+
+.to-do-button button {
+    width: 48px;
+    height: 35px
+}
+
+.buttons-div {
+    margin-top: 25px;
 }
