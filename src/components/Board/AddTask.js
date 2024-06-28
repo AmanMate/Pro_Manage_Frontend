@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createTask } from "../../api/tasks";
 import "./AddTask.css";
-import { DEFAULT_SKILLS } from "../../utils/constant";
 
 const AddTask = ({ addNewTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,24 +20,29 @@ const AddTask = ({ addNewTask }) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { title, priority, checklistItems } = formData;
 
-    if (!title || !priority || !checklistItems.length ) {
+    if (!title || !priority || !checklistItems.length) {
       alert("Please fill in all required fields and checklist items.");
       return;
     }
 
-    // Perform further task creation logic here, e.g., call createTask API
-    addNewTask(formData);
-    setIsModalOpen(false);
-    setFormData({
-      title: "",
-      priority: "",
-      assignee: "",
-      checklistItems: [],
-      dueDate: "",
-    });
+    try {
+      await createTask(formData);
+      addNewTask(formData);
+      setIsModalOpen(false);
+      setFormData({
+        title: "",
+        priority: "",
+        assignee: "",
+        checklistItems: [],
+        dueDate: "",
+      });
+    } catch (error) {
+      console.error("Failed to create task", error);
+      alert("Failed to create task. Please try again.");
+    }
   };
 
   const handleDeleteChecklistItem = (index) => {
@@ -68,13 +72,17 @@ const AddTask = ({ addNewTask }) => {
     }));
   };
 
-  // Calculate the number of selected checklist items
-  const selectedCount = formData.checklistItems.filter((item) => item.checked).length;
+  const selectedCount = formData.checklistItems.filter(
+    (item) => item.checked
+  ).length;
   const totalCount = formData.checklistItems.length;
 
   return (
     <div>
-      <button className="add-task" onClick={() => setIsModalOpen(true)}></button>
+      <button
+        className="add-task"
+        onClick={() => setIsModalOpen(true)}
+      ></button>
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -98,6 +106,12 @@ const AddTask = ({ addNewTask }) => {
                   Priority <span className="required">*</span>
                 </span>
                 <div className="button-group">
+                  <div
+                    className="small-circle"
+                    style={{
+                      backgroundColor: "red",
+                    }}
+                  ></div>
                   <button
                     type="button"
                     className={`priority-button ${
@@ -111,6 +125,12 @@ const AddTask = ({ addNewTask }) => {
                   >
                     High Priority
                   </button>
+                  <div
+                    className="small-circle diff"
+                    style={{
+                      backgroundColor: "#18B0FF",
+                    }}
+                  ></div>
                   <button
                     type="button"
                     className={`priority-button ${
@@ -124,6 +144,12 @@ const AddTask = ({ addNewTask }) => {
                   >
                     Moderate Priority
                   </button>
+                  <div
+                    className="small-circle"
+                    style={{
+                      backgroundColor: "yellow",
+                    }}
+                  ></div>
                   <button
                     type="button"
                     className={`priority-button ${
@@ -154,10 +180,10 @@ const AddTask = ({ addNewTask }) => {
                   <option value="user3">User 3</option>
                 </select>
               </label>
+              <span>
+                Checklist ({selectedCount}/{totalCount})
+              </span>
               <label className="Checklist">
-                <span>
-                  Checklist ({selectedCount}/{totalCount})
-                </span>
                 <div className="checklist-items">
                   {formData.checklistItems.map((item, index) => (
                     <div key={index} className="checklist-item">
@@ -186,34 +212,43 @@ const AddTask = ({ addNewTask }) => {
                           type="button"
                           onClick={() => handleDeleteChecklistItem(index)}
                           className="delete-button"
-                        >
-                        </button>
+                        ></button>
                       </div>
                     </div>
                   ))}
                 </div>
+              </label>
+              <button
+                type="button"
+                className="add-new-checklist-item"
+                onClick={handleAddChecklistItem}
+              >
+                + Add New
+              </button>
+              <div className="last-row">
+                <label className="dueDate">
+                  <input
+                    type="date"
+                    name="dueDate"
+                    value={formData.dueDate}
+                    onChange={handleChange}
+                  />
+                </label>
                 <button
+                  id="save-button-last"
                   type="button"
-                  className="add-new-checklist-item"
-                  onClick={handleAddChecklistItem}
+                  onClick={handleSubmit}
                 >
-                  + Add New
+                  Save
                 </button>
-              </label>
-              <label className="dueDate">
-                <input
-                  type="date"
-                  name="dueDate"
-                  value={formData.dueDate}
-                  onChange={handleChange}
-                />
-              </label>
-              <button type="button" onClick={handleSubmit}>
-                Save
-              </button>
-              <button type="button" onClick={() => setIsModalOpen(false)}>
-                Close
-              </button>
+                <button
+                  id="close-button-last"
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Close
+                </button>
+              </div>
             </form>
           </div>
         </div>
