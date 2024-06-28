@@ -3,6 +3,7 @@ const backendUrl = `http://localhost:4002/api/v1/task`;
 
 export const createTask = async ({ title, priority, assignee, checklistItems, dueDate }) => {
   try {
+    const userId = localStorage.getItem("userId");
       const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
       await axios(`${backendUrl}/create`, {
@@ -16,6 +17,7 @@ export const createTask = async ({ title, priority, assignee, checklistItems, du
             assignee,
             checklistItems,
             dueDate,
+            userId
           }),
       });
       return;
