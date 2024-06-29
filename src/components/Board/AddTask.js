@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createTask } from "../../api/tasks";
 import "./AddTask.css";
+import { DEFAULT_SKILLS } from "../../utils/constant";
 
 const AddTask = ({ addNewTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,24 +66,16 @@ const AddTask = ({ addNewTask }) => {
   const handleAddChecklistItem = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      checklistItems: [
-        ...prevFormData.checklistItems,
-        { text: "", checked: false },
-      ],
+      checklistItems: [...prevFormData.checklistItems, { text: "", checked: false }],
     }));
   };
 
-  const selectedCount = formData.checklistItems.filter(
-    (item) => item.checked
-  ).length;
+  const selectedCount = formData.checklistItems.filter((item) => item.checked).length;
   const totalCount = formData.checklistItems.length;
 
   return (
     <div>
-      <button
-        className="add-task"
-        onClick={() => setIsModalOpen(true)}
-      ></button>
+      <button className="add-task" onClick={() => setIsModalOpen(true)}></button>
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -114,14 +107,8 @@ const AddTask = ({ addNewTask }) => {
                   ></div>
                   <button
                     type="button"
-                    className={`priority-button ${
-                      formData.priority === "high" ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      handleChange({
-                        target: { name: "priority", value: "high" },
-                      })
-                    }
+                    className={`priority-button ${formData.priority === "high" ? "active" : ""}`}
+                    onClick={() => handleChange({ target: { name: "priority", value: "high" } })}
                   >
                     High Priority
                   </button>
@@ -133,14 +120,8 @@ const AddTask = ({ addNewTask }) => {
                   ></div>
                   <button
                     type="button"
-                    className={`priority-button ${
-                      formData.priority === "moderate" ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      handleChange({
-                        target: { name: "priority", value: "moderate" },
-                      })
-                    }
+                    className={`priority-button ${formData.priority === "moderate" ? "active" : ""}`}
+                    onClick={() => handleChange({ target: { name: "priority", value: "moderate" } })}
                   >
                     Moderate Priority
                   </button>
@@ -152,14 +133,8 @@ const AddTask = ({ addNewTask }) => {
                   ></div>
                   <button
                     type="button"
-                    className={`priority-button ${
-                      formData.priority === "low" ? "active" : ""
-                    }`}
-                    onClick={() =>
-                      handleChange({
-                        target: { name: "priority", value: "low" },
-                      })
-                    }
+                    className={`priority-button ${formData.priority === "low" ? "active" : ""}`}
+                    onClick={() => handleChange({ target: { name: "priority", value: "low" } })}
                   >
                     Low Priority
                   </button>
@@ -167,11 +142,7 @@ const AddTask = ({ addNewTask }) => {
               </div>
               <label className="AssignTo">
                 <span>Assign to</span>
-                <select
-                  name="assignee"
-                  value={formData.assignee}
-                  onChange={handleChange}
-                >
+                <select name="assignee" value={formData.assignee} onChange={handleChange}>
                   <option value="" disabled>
                     Select an assignee
                   </option>
@@ -180,10 +151,10 @@ const AddTask = ({ addNewTask }) => {
                   <option value="user3">User 3</option>
                 </select>
               </label>
+              <label className="Checklist">
               <span>
                 Checklist ({selectedCount}/{totalCount})
               </span>
-              <label className="Checklist">
                 <div className="checklist-items">
                   {formData.checklistItems.map((item, index) => (
                     <div key={index} className="checklist-item">
@@ -212,41 +183,25 @@ const AddTask = ({ addNewTask }) => {
                           type="button"
                           onClick={() => handleDeleteChecklistItem(index)}
                           className="delete-button"
-                        ></button>
+                        >
+                        </button>
                       </div>
                     </div>
                   ))}
-                </div>
-              </label>
-              <button
-                type="button"
-                className="add-new-checklist-item"
-                onClick={handleAddChecklistItem}
-              >
+              <button type="button" className="add-new-checklist-item" onClick={handleAddChecklistItem}>
                 + Add New
               </button>
+                </div>
+              </label>
               <div className="last-row">
                 <label className="dueDate">
-                  <input
-                    type="date"
-                    name="dueDate"
-                    value={formData.dueDate}
-                    onChange={handleChange}
-                  />
+                  <input type="date" name="dueDate" value={formData.dueDate} onChange={handleChange} />
                 </label>
-                <button
-                  id="save-button-last"
-                  type="button"
-                  onClick={handleSubmit}
-                >
-                  Save
-                </button>
-                <button
-                  id="close-button-last"
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                >
+                <button id="close-button-last" type="button" onClick={() => setIsModalOpen(false)}>
                   Close
+                </button>
+                <button id="save-button-last" type="button" onClick={handleSubmit}>
+                  Save
                 </button>
               </div>
             </form>

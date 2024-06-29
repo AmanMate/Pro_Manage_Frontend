@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import "./Board.css";
 import database1 from "../../assets/icons/database1.png";
@@ -12,7 +12,47 @@ export default function Board() {
   const [currentDate, setCurrentDate] = useState("");
   const [sortBy, setSortBy] = useState("week");
   const [displayNone, setDisplayNone] = useState(true);
-  const [userName, setUserName] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
+  const submenuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  const [isVisible, setIsVisible] = useState(false); // Renamed isOpen
+
+  const handleOpenModal = () => setIsVisible(true);
+  const handleCloseModal = () => setIsVisible(false);
+  const handleDeleteConfirmed = () => {
+    handleSubmenuButtonClick(); // Perform deletion logic here
+    handleCloseModal();
+  };
+
+  const toggleSubmenu = (event) => {
+    event.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        submenuRef.current &&
+        !submenuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const handleSubmenuButtonClick = () => {
+    // Handle the button click action here
+    setIsOpen(false);
+  };
 
   const displayNoneFunction = () => {
     setDisplayNone(!displayNone);
@@ -57,12 +97,6 @@ export default function Board() {
 
     const now = new Date();
     setCurrentDate(formatDate(now));
-
-    // Get the user name from localStorage
-    const storedUserName = localStorage.getItem("name");
-    if (storedUserName) {
-      setUserName(storedUserName.replace(/"/g, ''));
-    }
   }, []);
 
   const showModal = () => {
@@ -132,7 +166,7 @@ export default function Board() {
       <div className="wrapper-board">
         <div className="top-row">
           <div className="welcome">
-            <p>Welcome {userName}</p>
+            <p>Welcome Kumar</p>
           </div>
           <div className="date">
             <p>{currentDate}</p>
@@ -181,77 +215,7 @@ export default function Board() {
           <div className="board-backlog">
             <div className="backlog-board-row1">
               <h3>Backlog</h3>
-              <img
-                onClick={displayNoneFunction}
-                src={codicon_collapse}
-                alt="collapse"
-              />
-            </div>
-            <div className="backlog-board-row2">
-              {tasks.map((task) => (
-                <div key={task.id} className="card-section">
-                  <div className="priority-edit-row">
-                    <div
-                      className="small-circle"
-                      style={{
-                        backgroundColor:
-                          task.priority === "high"
-                            ? "red"
-                            : task.priority === "moderate"
-                            ? "yellow"
-                            : "green",
-                      }}
-                    ></div>
-                    <div className="priority">{task.priority} Priority</div>
-                    <div className="edit">
-                      <button>
-                        <img src={Group544} alt="edit" />
-                      </button>
-                    </div>
-                  </div>
-                  <h2>{task.title}</h2>
-                  <div className="checklist-and-arrow">
-                    <p>
-                      Checklist (
-                      {
-                        task.checklistItems.filter((item) => item.checked)
-                          .length
-                      }
-                      /{task.checklistItems.length})
-                    </p>
-                  </div>
-                  {displayNone && (
-                    <div className="checklist">
-                      {task.checklistItems.map((item) => (
-                        <div key={item.id} className="checklist-options">
-                          <input
-                            name={item.id}
-                            checked={item.checked}
-                            onChange={handleCheckboxChange}
-                            className="checklist-member"
-                            type="checkbox"
-                          />
-                          <label htmlFor={item.id}>{item.text}</label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>Feb 10th</button>
-                    </div>
-                    <div className="progress-button">
-                      <button>Progress</button>
-                    </div>
-                    <div className="to-do-button">
-                      <button>To-do</button>
-                    </div>
-                    <div className="done-button">
-                      <button>Done</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <img src={codicon_collapse} alt="colapse" />
             </div>
           </div>
           <div className="board-backlog">
@@ -274,16 +238,64 @@ export default function Board() {
                         backgroundColor:
                           task.priority === "high"
                             ? "red"
-                            : task.priority === "moderate"
+                            : "moderate"
                             ? "yellow"
-                            : "green",
+                            : "low"
+                            ? "green"
+                            : "greenyellow",
                       }}
                     ></div>
                     <div className="priority">{task.priority} Priority</div>
                     <div className="edit">
-                      <button>
+                      <button
+                        id="toggleSubmenuButton"
+                        onClick={toggleSubmenu}
+                        ref={buttonRef}
+                      >
                         <img src={Group544} alt="edit" />
                       </button>
+                      {isOpen && (
+                        <div
+                          id="submenu"
+                          className="display-submenu-div"
+                          ref={submenuRef}
+                        >
+                          <button onClick={handleSubmenuButtonClick}>
+                            Edit
+                          </button>
+                          <button onClick={handleSubmenuButtonClick}>
+                            Share
+                          </button>
+                          <button
+                            id="delete-button-submenu"
+                            onClick={handleOpenModal}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                      {isVisible && ( // Use the new state variable name
+                        <div>
+                          <div className="background"></div>
+                          <div className="confirm-delete-modal">
+                            <p>Are you sure you want to Delete?</p>
+                            <div className="modal-actions">
+                              <button
+                                className="cancel-button-modal"
+                                onClick={handleCloseModal}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={handleCloseModal}
+                                className="delete-button"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <h2>{task.title}</h2>
@@ -318,15 +330,15 @@ export default function Board() {
                       <button>Feb 10th</button>
                     </div>
                     <div className="progress-button">
-                      <button>Backlog</button>
+                      <button>Progress</button>
                     </div>
                     <div className="to-do-button">
-                      <button>Progress</button>
+                      <button>To-do</button>
                     </div>
                     <div className="done-button">
                       <button>Done</button>
                     </div>
-                  </div>
+                  </div>{" "}
                 </div>
               ))}
             </div>
@@ -334,153 +346,13 @@ export default function Board() {
           <div className="board-backlog">
             <div className="backlog-board-row1">
               <h3>In Progress</h3>
-              <img
-                onClick={displayNoneFunction}
-                src={codicon_collapse}
-                alt="collapse"
-              />
-            </div>
-            <div className="backlog-board-row2">
-              {tasks.map((task) => (
-                <div key={task.id} className="card-section">
-                  <div className="priority-edit-row">
-                    <div
-                      className="small-circle"
-                      style={{
-                        backgroundColor:
-                          task.priority === "high"
-                            ? "red"
-                            : task.priority === "moderate"
-                            ? "yellow"
-                            : "green",
-                      }}
-                    ></div>
-                    <div className="priority">{task.priority} Priority</div>
-                    <div className="edit">
-                      <button>
-                        <img src={Group544} alt="edit" />
-                      </button>
-                    </div>
-                  </div>
-                  <h2>{task.title}</h2>
-                  <div className="checklist-and-arrow">
-                    <p>
-                      Checklist (
-                      {
-                        task.checklistItems.filter((item) => item.checked)
-                          .length
-                      }
-                      /{task.checklistItems.length})
-                    </p>
-                  </div>
-                  {displayNone && (
-                    <div className="checklist">
-                      {task.checklistItems.map((item) => (
-                        <div key={item.id} className="checklist-options">
-                          <input
-                            name={item.id}
-                            checked={item.checked}
-                            onChange={handleCheckboxChange}
-                            className="checklist-member"
-                            type="checkbox"
-                          />
-                          <label htmlFor={item.id}>{item.text}</label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>Feb 10th</button>
-                    </div>
-                    <div className="progress-button">
-                      <button>Backlog</button>
-                    </div>
-                    <div className="to-do-button">
-                      <button>To-Do</button>
-                    </div>
-                    <div className="done-button">
-                      <button>Done</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <img src={codicon_collapse} alt="colapse" />
             </div>
           </div>
           <div className="board-backlog">
             <div className="backlog-board-row1">
               <h3>Completed</h3>
-              <img
-                onClick={displayNoneFunction}
-                src={codicon_collapse}
-                alt="collapse"
-              />
-            </div>
-            <div className="backlog-board-row2">
-              {tasks.map((task) => (
-                <div key={task.id} className="card-section">
-                  <div className="priority-edit-row">
-                    <div
-                      className="small-circle"
-                      style={{
-                        backgroundColor:
-                          task.priority === "high"
-                            ? "red"
-                            : task.priority === "moderate"
-                            ? "yellow"
-                            : "green",
-                      }}
-                    ></div>
-                    <div className="priority">{task.priority} Priority</div>
-                    <div className="edit">
-                      <button>
-                        <img src={Group544} alt="edit" />
-                      </button>
-                    </div>
-                  </div>
-                  <h2>{task.title}</h2>
-                  <div className="checklist-and-arrow">
-                    <p>
-                      Checklist (
-                      {
-                        task.checklistItems.filter((item) => item.checked)
-                          .length
-                      }
-                      /{task.checklistItems.length})
-                    </p>
-                  </div>
-                  {displayNone && (
-                    <div className="checklist">
-                      {task.checklistItems.map((item) => (
-                        <div key={item.id} className="checklist-options">
-                          <input
-                            name={item.id}
-                            checked={item.checked}
-                            onChange={handleCheckboxChange}
-                            className="checklist-member"
-                            type="checkbox"
-                          />
-                          <label htmlFor={item.id}>{item.text}</label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>Feb 10th</button>
-                    </div>
-                    <div className="progress-button">
-                      <button>Backlog</button>
-                    </div>
-                    <div className="to-do-button">
-                      <button>Progress</button>
-                    </div>
-                    <div className="done-button">
-                      <button>To-do</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <img src={codicon_collapse} alt="completed" />
             </div>
           </div>
         </div>

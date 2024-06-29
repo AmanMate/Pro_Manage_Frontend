@@ -36,12 +36,17 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 666px;
-    height: 359px;
+    height: 475px;
     top: 214px;
     left: 451px;
     z-index: 1001;
 }
 
+.modal form {
+    height: 475px;
+    /* overflow-y: scroll; */
+    padding-inline: 20px;
+}
 
 
 .modal .button-group {
@@ -92,6 +97,9 @@
 }
 
 .checklist-items {
+    width: 639px;
+    height: 130px;
+    overflow-y:scroll hidden;
     margin-top: 10px;
 }
 
@@ -99,7 +107,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 5px;
-    width: 639px;
+    width: 649px;
     transform: translate(-2px, 10px);
 }
 
@@ -107,6 +115,7 @@
     position: relative;
     display: inline-block;
     width: calc(100% - 30px);
+    height: 50px;
     border: 1px solid #E2E2E2;
     border-radius: 11px;
 }
@@ -150,9 +159,9 @@
 }
 
 .checklist-item .delete-button {
-    width: 30px;
-    height: 30px;
-    margin-left: -30px;
+    width: 10px;
+    height: 20px;
+    /* margin-left: -30px; */
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -160,8 +169,8 @@
     align-items: center;
     justify-content: center;
     background-image: url("../../assets/icons/Delete.png");
-    background-size: cover;
-    transform: translate(-28px, 12px);
+    background-size: 17px;
+    transform: translate(-28px, 18px);
 }
 
 .add-new-checklist-item {
@@ -176,14 +185,9 @@
     font-weight: 500;
     line-height: 19.36px;
     text-align: center;
-    transform: translate(-51px, 7px);
+    transform: translate(-51px, -6px);
 }
 
-.modal form {
-    height: 370px;
-    overflow-y: scroll;
-    padding-inline: 20px;
-}
 
 .Priority {
     display: flex;
@@ -229,8 +233,9 @@
 }
 
 .last-row button {
-    margin: 20px;
+    margin: 10px 10px 0px 0px;
     border-radius: 10px;
+    transform: translate(0px, 10px);
 }
 
 .priority-edit-row .small-circle {
@@ -251,5 +256,19 @@
 #save-button-last {
     background: #17A2B8;
     color: white;
-    border: 2px solid white;
+    border: 2px solid #17A2B8;
+}
+
+.right select {
+    border: none !important;
+}
+
+.right select:focus {
+    border: none;
+}
+
+.dueDate {
+    width: 200px;
+    margin: 0px 30px 0px 0px;
+    transform: translate(-58px, 4px);
 }
