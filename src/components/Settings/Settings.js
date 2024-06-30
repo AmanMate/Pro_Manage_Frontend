@@ -50,8 +50,8 @@ export default function Settings() {
     try {
       updateData.oldEmail = localStorage.getItem("email");
       updateData.oldName = localStorage.getItem("name");
+      // await getUserDetails(updateData);
       await updateUser(updateData);
-      await getUserDetails(updateData);
       alert("User updated successfully");
     } catch (error) {
       console.error("Update failed:", error);

@@ -20,21 +20,15 @@ export default function Board() {
   const buttonRef = useRef(null);
   
   const [isVisible, setIsVisible] = useState(false); // Renamed isOpen
+  const [taskToDelete, setTaskToDelete] = useState(null);
   
-  const handleOpenModal = () => setIsVisible(true);
-  const handleCloseModal = () => setIsVisible(false);
-  const handleDeleteConfirmed = () => {
-    handleSubmenuButtonClick(); // Perform deletion logic here
-    handleCloseModal();
-  };
-
   useEffect(() => {
     const userNameFromStorage = localStorage.getItem("name");
     if (userNameFromStorage) {
       setUserName(userNameFromStorage.replace(/"/g, ''));
     }
   }, []);
-    
+  
   useEffect(() => {
     const getOrdinalSuffix = (day) => {
       if (day > 3 && day < 21) return "th";
@@ -71,15 +65,15 @@ export default function Board() {
       
       return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
     };
-
+    
     const now = new Date();
     setCurrentDate(formatDate(now));
   }, []);
-    
+  
   const sortTasks = (interval) => {
     let sortedTasks = [...tasks];
     const currentDate = new Date();
-
+    
     switch (interval) {
       case "today":
         sortedTasks = sortedTasks.filter((task) => {
@@ -92,7 +86,7 @@ export default function Board() {
           );
         });
         break;
-      case "week":
+        case "week":
         sortedTasks = sortedTasks.filter((task) => {
           const taskDate = new Date(task.createdAt);
           const diffTime = Math.abs(currentDate - taskDate);
@@ -100,47 +94,47 @@ export default function Board() {
           return diffDays <= 7;
         });
         break;
-      case "month":
-        sortedTasks = sortedTasks.filter((task) => {
+        case "month":
+          sortedTasks = sortedTasks.filter((task) => {
           const taskDate = new Date(task.createdAt);
           return taskDate.getMonth() === currentDate.getMonth();
         });
         break;
-      default:
-        break;
-    }
-    setTasks(sortedTasks);
-  };
-
-  useEffect(() => {
-    sortTasks("week");
-  }, []);
-  
-  const toggleSubmenu = (event) => {
-    event.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        submenuRef.current &&
-        !submenuRef.current.contains(event.target) &&
-        buttonRef.current &&
+        default:
+          break;
+        }
+        setTasks(sortedTasks);
+      };
+      
+      useEffect(() => {
+        sortTasks("week");
+      }, []);
+      
+      const toggleSubmenu = (event) => {
+        event.stopPropagation();
+        setIsOpen(!isOpen);
+      };
+      
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (
+            submenuRef.current &&
+            !submenuRef.current.contains(event.target) &&
+            buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
         setIsOpen(false);
       }
     };
-
+    
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
-
-
+  
+  
   useEffect(() => {
     const fetchTasks = async () => {
       const userId = localStorage.getItem("userId");
@@ -162,6 +156,11 @@ export default function Board() {
     // Handle the button click action here
     setIsOpen(false);
   };
+  
+  const displayNoneFunction = () => {
+    setDisplayNone(!displayNone);
+  };
+
 
   const showModal = () => {
     setShow(true);
@@ -172,24 +171,11 @@ export default function Board() {
     box2: false,
     box3: false,
   });
-  
-  const displayNoneFunction = () => {
-    setDisplayNone(!displayNone);
-  };
 
-  const handleCheckboxChange = (taskId, itemId) => {
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        if (task.id === taskId) {
-          return {
-            ...task,
-            checklistItems: task.checklistItems.map((item) =>
-              item.id === itemId ? { ...item, checked: !item.checked } : item
-            ),
-          };
-        }
-        return task;
-      });
+  const handleCheckboxChange = (event) => {
+    setCheckboxes({
+      ...checkboxes,
+      [event.target.name]: event.target.checked,
     });
   };
 
@@ -209,8 +195,7 @@ export default function Board() {
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      // Perform API call to update the task status in the backend
-      // For now, assume it succeeds and update locally
+      await updateCreateTaskById(taskId, { status: newStatus });
       const updatedTasks = tasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
       );
@@ -220,9 +205,38 @@ export default function Board() {
     }
   };  
 
+  const editTask = async (taskId, updatedData) => {
+    try {
+      const response = await updateCreateTaskById(taskId, updatedData);
+      setTasks(tasks.map(task => task.id === taskId ? response.task : task));
+    } catch (error) {
+      console.error("Failed to edit task", error);
+    }
+  };  
+  
+  const handleOpenModal = (taskId) => {
+    setTaskToDelete(taskId); // Set task ID to delete
+    setIsVisible(true);
+  };
 
-
-
+  const handleCloseModal = () => {
+    setTaskToDelete(null); // Clear task ID
+    setIsVisible(false);
+  };
+  
+  const handleDeleteConfirmed = async () => {
+    if (taskToDelete) {
+      try {
+        await deleteTaskById(taskToDelete);
+        setTasks(tasks.filter(task => task.id !== taskToDelete));
+      } catch (error) {
+        console.error("Failed to delete task", error);
+      }
+      handleCloseModal();
+    }
+  };
+  
+  
   return (
     <div style={{ display: "flex" }}>
       <Navbar />
@@ -312,7 +326,7 @@ export default function Board() {
                           className="display-submenu-div"
                           ref={submenuRef}
                         >
-                          <button onClick={handleSubmenuButtonClick}>
+                          <button onClick={() => editTask(task.id, {name: 'Updated Task Name'})}>
                             Edit
                           </button>
                           <button onClick={handleSubmenuButtonClick}>
@@ -320,7 +334,7 @@ export default function Board() {
                           </button>
                           <button
                             id="delete-button-submenu"
-                            onClick={handleOpenModal}
+                            onClick={() => handleOpenModal(task.id)}
                           >
                             Delete
                           </button>
@@ -368,7 +382,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={() => handleCheckboxChange(task.id, item.id)}
+                            onChange={handleCheckboxChange}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -494,7 +508,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={() => handleCheckboxChange(task.id, item.id)}
+                            onChange={handleCheckboxChange}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -614,7 +628,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={() => handleCheckboxChange(task.id, item.id)}
+                            onChange={handleCheckboxChange}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -734,7 +748,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={() => handleCheckboxChange(task.id, item.id)}
+                            onChange={handleCheckboxChange}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -766,5 +780,3 @@ export default function Board() {
     </div>
   );
 }
-
-

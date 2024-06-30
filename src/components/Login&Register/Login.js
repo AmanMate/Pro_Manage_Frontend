@@ -18,8 +18,6 @@ export default function Login() {
     confirmPassword: ""
   });
 
-  // const [jobDetails, setJobDetails] = useState({});
-
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: ""
