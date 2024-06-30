@@ -13,7 +13,7 @@ export default function Board() {
   const [currentDate, setCurrentDate] = useState("");
   const [sortBy, setSortBy] = useState("week");
   const [displayNone, setDisplayNone] = useState(true);
-  const [userName, setUserName] = useState(""); // State to hold the user's name
+  const [userName, setUserName] = useState(""); 
   
   const [isOpen, setIsOpen] = useState(false);
   const submenuRef = useRef(null);
@@ -221,8 +221,6 @@ export default function Board() {
   };  
 
 
-
-
   return (
     <div style={{ display: "flex" }}>
       <Navbar />
@@ -326,7 +324,7 @@ export default function Board() {
                           </button>
                         </div>
                       )}
-                      {isVisible && ( // Use the new state variable name
+                      {isVisible && ( 
                         <div>
                           <div className="background"></div>
                           <div className="confirm-delete-modal">
@@ -452,7 +450,7 @@ export default function Board() {
                           </button>
                         </div>
                       )}
-                      {isVisible && ( // Use the new state variable name
+                      {isVisible && ( 
                         <div>
                           <div className="background"></div>
                           <div className="confirm-delete-modal">
@@ -572,7 +570,7 @@ export default function Board() {
                           </button>
                         </div>
                       )}
-                      {isVisible && ( // Use the new state variable name
+                      {isVisible && (
                         <div>
                           <div className="background"></div>
                           <div className="confirm-delete-modal">
@@ -692,7 +690,7 @@ export default function Board() {
                           </button>
                         </div>
                       )}
-                      {isVisible && ( // Use the new state variable name
+                      {isVisible && ( 
                         <div>
                           <div className="background"></div>
                           <div className="confirm-delete-modal">
