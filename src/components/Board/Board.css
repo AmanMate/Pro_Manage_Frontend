@@ -2,6 +2,416 @@
     display: flex;
 }
 
+button {
+    cursor: pointer
+}
+
+.wrapper-board {
+    width: 172vh;
+    margin: 20px 27px 30px;
+    height: 90vh;
+}
+
+.top-row,
+.second-row,
+.right,
+.left,
+.add-people,
+.email-add-buttons,
+.checklist-and-arrow,
+.priority-edit-row,
+.display-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.welcome p {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: left;
+    margin: 15px 0px;
+}
+
+.date p {
+    color: #707070;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.left h2 {
+    font-size: 29px;
+    font-weight: 500;
+    text-align: left;
+    margin: 6px 0px;
+}
+
+.add-people img {
+    width: 16px;
+    height: 16px;
+    transform: translate(23px, 20px);
+}
+
+.add-people {
+    width: 180px;
+}
+
+.add-people button {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    color: #707070;
+    width: 99px;
+    transform: translate(-39px, 6px);
+    cursor: pointer;
+    margin: 0px;
+    border: none;
+    background: white;
+}
+
+.right p {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    transform: translate(-3px, 0px);
+}
+
+.right img {
+    width: 10px;
+    height: 5px;
+    transform: translate(0px, 26px);
+}
+
+.modal-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 5;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.container {
+    background: white;
+    border-radius: 10px;
+    margin: 140px auto;
+    width: 600px;
+    padding-block: 0px 13px;
+}
+
+.container p {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    margin: 21px 43px;
+    transform: translate(-3px, 20px);
+}
+
+.modal-wrapper input {
+    border-radius: 10px;
+    height: 45px;
+    width: 82%;
+    margin: 16px 33px 16px 39px;
+    font-size: 17px;
+    padding: 0px 10px;
+}
+
+.email-add-buttons {
+    display: inline-block;
+}
+
+.email-add-buttons button {
+    border-radius: 5px;
+    width: 254px;
+    margin: 10px 36px;
+}
+
+.add-email-cancel-button {
+    background: white;
+    color: #CF3636;
+    border: 1px solid #CF3636;
+    margin-right: 0px !important;
+}
+
+.add-email-add-button {
+    background: #17A2B8;
+    color: white;
+    border: none;
+    margin-left: 10px !important;
+}
+
+.board-row {
+    margin-top: 20px;
+    display: -webkit-inline-box;
+    /* overflow-x: scroll; */
+    width: 173vh;
+}
+
+.backlog-board-row1 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.backlog-board-row2 {
+    overflow-y: scroll;
+    height: 64vh;
+    
+}
+
+.backlog-board-row1 img {
+    height: 24px;
+    width: 24px;
+    transform: translate(-17px, 17px);
+
+}
+
+.backlog-board-row1 h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: left;
+    margin-left: 17px;
+}
+
+.card-section {
+    background: white;
+    border-radius: 11px;
+    padding: 18px;
+    margin: 12px;
+}
+
+.card-section h2 {
+    margin: 0px 0px 16px 0px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 27px;
+    text-align: left;
+
+}
+
+.checklist-and-arrow button {
+    height: 18px;
+    transform: translateY(15px);
+    background: white;
+    border: none;
+    cursor: pointer;
+    margin: 0px;
+    width: 35px;
+}
+
+.card-section p {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16.94px;
+    text-align: left;
+}
+
+.checklist-options {
+    display: flex;
+}
+
+.checklist-options {
+    border: 1px solid #E2E2E2;
+    border-radius: 10px;
+    width: 95%;
+    margin: 10px -2px;
+    padding: 9px;
+}
+
+.checklist-options input {
+    border-radius: 0px;
+    height: 13px;
+    width: 13px;
+    margin: 0px 7px 0px 0px;
+    transform: translateY(1vh);
+}
+
+.small-circle {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+
+}
+
+.edit button {
+    margin: 0px;
+    background: white;
+    border: none;
+    height: 13px;
+}
+
+.edit img {
+    transform: translate(0px, -10px);
+}
+
+.priority {
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 12px;
+    text-align: left;
+    height: 15px;
+    transform: translate(-85px, -3px);
+}
+
+.board-backlog {
+    background: #EEF2F5;
+    width: 360px;
+    height: 70vh;
+    /* overflow-y: scroll; */
+    border: 11px solid #eef2f5;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background: #D6EAF4;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8DAAB9CC;
+    border-radius: 10px;
+}
+
+.done-button button,
+.backlog-button button,
+.progress-button button,
+.to-do-button button,
+.date-button button {
+    font-weight: 500;
+    line-height: 12px;
+    text-align: left;
+    border: none;
+    background: #EEECEC;
+    border-radius: 10px;
+    color: #767575;
+    font-size: 10px;
+    margin: 5px 2px;
+    text-align: center;
+}
+
+.date-button button {
+    width: 57px;
+    height: 25px;
+    margin-right: 50px ;
+}
+
+.progress-button button {
+    width: 58px;
+    height: 25px;
+}
+
+.done-button button {
+    width: 54px;
+    height: 25px;
+}
+
+
+.backlog-button button {
+    width: 53px;
+    height: 25px;
+}
+
+.to-do-button button {
+    width: 53px;
+    height: 25px;
+}
+
+.buttons-div {
+    margin-top: 25px;
+}
+
+#toggleSubmenuButton img {
+    cursor: pointer;
+}
+
+
+#submenu {
+    z-index: 5;
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 22px 0px #7E7A7A40;
+    transform: translate(-76px, -2px);
+    text-align: left;
+    width: 103px;
+    padding: 10px 0px;
+}
+
+#submenu button {
+    margin: 0px;
+    background: white;
+    border: none;
+    height: 28px;
+    padding-left: 22px;
+    margin-block: 2px;
+    font-weight: 500;
+    text-align: left;
+    font-size: 15px;
+}
+
+#delete-button-submenu {
+    color: #CF3636;
+
+}
+
+.confirm-delete-modal {
+    height: 180px;
+    width: 325px;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 10;
+    position: absolute;
+    background: white;
+    transform: translate(-325px, 1px);
+}
+
+.background {
+    z-index: 6;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(48, 61, 67, 0.55);
+}
+
+.confirm-delete-modal button {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    height: 45px;
+    width: 300px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.confirm-delete-modal p {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19.07px;
+    text-align: center;
+}
+
+.delete-button {
+    /* background: rgba(23, 162, 184, 1) !important; */
+    color: white !important;
+    transform: translateX(6px);
+}
+
+.cancel-button-modal {
+    color: #CF3636;
+    border: 1px solid #CF3636 !important;
+    transform: translateX(5px);
+}
+=======
+.Nav-Board {
+    display: flex;
+}
+
 .wrapper-board {
     width: 172vh;
     margin: 20px 27px 30px;
@@ -305,3 +715,4 @@
 .buttons-div {
     margin-top: 25px;
 }
+
