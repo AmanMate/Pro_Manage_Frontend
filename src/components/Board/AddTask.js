@@ -13,6 +13,7 @@ const AddTask = ({ addNewTask }) => {
     dueDate: "",
   });
   
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
