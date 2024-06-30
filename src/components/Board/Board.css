@@ -397,7 +397,6 @@ button {
 }
 
 .delete-button {
-    /* background: rgba(23, 162, 184, 1) !important; */
     color: white !important;
     transform: translateX(6px);
 }
