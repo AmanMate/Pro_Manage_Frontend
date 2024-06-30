@@ -12,6 +12,7 @@ const AddTask = ({ addNewTask }) => {
     checklistItems: [],
     dueDate: "",
   });
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -153,7 +154,7 @@ const AddTask = ({ addNewTask }) => {
               </label>
               <label className="Checklist">
               <span>
-                Checklist ({selectedCount}/{totalCount})
+                Checklist ({selectedCount}/{totalCount}) <span className="required">*</span>
               </span>
                 <div className="checklist-items">
                   {formData.checklistItems.map((item, index) => (

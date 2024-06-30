@@ -144,13 +144,19 @@ button {
 .board-row {
     margin-top: 20px;
     display: -webkit-inline-box;
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
     width: 173vh;
 }
 
 .backlog-board-row1 {
     display: flex;
     justify-content: space-between;
+}
+
+.backlog-board-row2 {
+    overflow-y: scroll;
+    height: 64vh;
+    
 }
 
 .backlog-board-row1 img {
@@ -252,7 +258,7 @@ button {
     background: #EEF2F5;
     width: 360px;
     height: 70vh;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     border: 11px solid #eef2f5;
     border-radius: 10px;
     margin-right: 10px;
@@ -269,8 +275,9 @@ button {
 }
 
 .done-button button,
-.to-do-button button,
+.backlog-button button,
 .progress-button button,
+.to-do-button button,
 .date-button button {
     font-weight: 500;
     line-height: 12px;
@@ -280,29 +287,35 @@ button {
     border-radius: 10px;
     color: #767575;
     font-size: 10px;
-    margin: 5px 8px;
+    margin: 5px 2px;
     text-align: center;
 }
 
 .date-button button {
-    width: 67px;
-    height: 35px;
+    width: 57px;
+    height: 25px;
+    margin-right: 50px ;
 }
 
 .progress-button button {
-    width: 59px;
-    height: 35px;
+    width: 58px;
+    height: 25px;
 }
 
 .done-button button {
-    width: 52px;
-    height: 35px;
+    width: 54px;
+    height: 25px;
 }
 
 
+.backlog-button button {
+    width: 53px;
+    height: 25px;
+}
+
 .to-do-button button {
-    width: 48px;
-    height: 35px
+    width: 53px;
+    height: 25px;
 }
 
 .buttons-div {

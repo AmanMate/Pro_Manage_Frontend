@@ -3,7 +3,6 @@ const backendUrl = `http://localhost:4002/api/v1/task`;
 
 export const createTask = async ({ title, priority, assignee, checklistItems, dueDate }) => {
   try {
-    const userId = localStorage.getItem("userId");
       const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
       await axios(`${backendUrl}/create`, {
@@ -16,8 +15,7 @@ export const createTask = async ({ title, priority, assignee, checklistItems, du
             priority,
             assignee,
             checklistItems,
-            dueDate,
-            userId
+            dueDate
           }),
       });
       return;
@@ -28,16 +26,18 @@ export const createTask = async ({ title, priority, assignee, checklistItems, du
 };
 
 
-export const getCreateTaskById = async (taskId, userId) => {
+export const getCreateTaskById = async (taskId) => {
   try { 
-    await axios(`${backendUrl}/create-task/${taskId}/${userId}`, {
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    await axios(`${backendUrl}/createTask`, {
       action: " ",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
-       
+       taskId,
       }),
     });
     return;
@@ -49,7 +49,9 @@ export const getCreateTaskById = async (taskId, userId) => {
 
 export const updateCreateTaskById = async (taskId, updateData) => {
   try { 
-    await axios(`${backendUrl}/update/${taskId}/`, {
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    await axios(`${backendUrl}/updateTask`, {
       action: " ",
       method: "PUT",
       headers: {
@@ -57,10 +59,9 @@ export const updateCreateTaskById = async (taskId, updateData) => {
       },
       data: JSON.stringify({
        updateData,
+       taskId
       }),
     });
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
     return;
   } catch (error) {
     console.log(error);
@@ -70,14 +71,16 @@ export const updateCreateTaskById = async (taskId, updateData) => {
 
 export const deleteTaskById = async (taskId) => {
   try { 
-    await axios(`${backendUrl}/delete/${taskId}/`, {
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    await axios(`${backendUrl}/deleteTask`, {
       action: " ",
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
-      
+        taskId
       }),
     });
     return;
@@ -89,7 +92,9 @@ export const deleteTaskById = async (taskId) => {
 
 export const getAllTaskById = async (userId) => {
   try { 
-    await axios(`${backendUrl}/tasks/${userId}/`, {
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
+    const response = await axios(`${backendUrl}/getAllTasks`, {
       action: " ",
       method: "GET",
       headers: {
@@ -99,7 +104,7 @@ export const getAllTaskById = async (userId) => {
       
       }),
     });
-    return;
+    return response.data;
   } catch (error) {
     console.log(error);
     alert("Something went wrong")
