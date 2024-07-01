@@ -144,7 +144,7 @@ button {
 .board-row {
     margin-top: 20px;
     display: -webkit-inline-box;
-    /* overflow-x: scroll; */
+    overflow-x: scroll ;
     width: 173vh;
 }
 
@@ -155,8 +155,7 @@ button {
 
 .backlog-board-row2 {
     overflow-y: scroll;
-    height: 64vh;
-    
+    height: 65vh;
 }
 
 .backlog-board-row1 img {
@@ -257,7 +256,7 @@ button {
 .board-backlog {
     background: #EEF2F5;
     width: 360px;
-    height: 70vh;
+    height: 73vh;
     /* overflow-y: scroll; */
     border: 11px solid #eef2f5;
     border-radius: 10px;
@@ -295,6 +294,16 @@ button {
     width: 57px;
     height: 25px;
     margin-right: 50px ;
+}
+
+.past-date button{
+    background-color: red;
+    color: white;
+}
+
+.completed-date button{
+    background-color: #63C05B;
+    color: white;
 }
 
 .progress-button button {
@@ -397,6 +406,7 @@ button {
 }
 
 .delete-button {
+    /* background: rgba(23, 162, 184, 1) !important; */
     color: white !important;
     transform: translateX(6px);
 }
