@@ -9,21 +9,42 @@
 
 .sign-in-div {
     padding-bottom: 163px;
+    margin-bottom: -110px;
 }
 
-.wrapper h1 {
+.sign-in-div h1 {
     margin-block: 77px;
     font-size: 33.08px;
     font-weight: 600;
     line-height: 45.04px;
     text-align: center;
+    margin-left: 100px;
+    margin-top: 140px;
+    margin-bottom: 60px;
 }
+
+.sign-up-div h1 {
+    margin-block: 77px;
+    font-size: 33.08px;
+    font-weight: 600;
+    line-height: 45.04px;
+    text-align: center;
+    margin-left: 100px;
+    margin-top: 100px;
+    margin-bottom: 60px;
+}
+
+
 
 .blue-div {
     width: 1008px;
     background: #17A2B8;
     height: 100vh;
     color: white;
+}
+
+.blue-div img {
+    margin-top: 60px;
 }
 
 .blue-div h2 {
@@ -52,7 +73,7 @@ input {
     height: 45px;
     border: 1px solid #D0D0D0;
     width: 75%;
-    margin: 16px 57px;
+    margin: 10px 57px;
     font-size: 17px;
     padding-inline: 8px;
 }
@@ -60,11 +81,10 @@ input {
 button {
 
     height: 45px;
-    width: 80%;
-    margin: 16px 52px;
+    width: 100%;
+    margin: 16px 57px;
     font-size: 17px;
     padding-inline: 8px;
-
     border-radius: 40px;
 }
 
@@ -73,9 +93,12 @@ button {
     font-size: 14px;
     font-weight: 400;
     line-height: 26px;
+    margin-left: 100px;
+    color: #828282;
+
 }
 
 #confirmPassError {
     color: red;
-    
+    margin-left: 70px;
 }
