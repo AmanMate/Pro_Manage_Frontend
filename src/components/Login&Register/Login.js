@@ -9,7 +9,7 @@ import Password from "../../assets/icons/lock.png";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [activeForm, setActiveForm] = useState("signUp");
+  const [activeForm, setActiveForm] = useState("signIn");
   const [confirmPassError, setConfirmPassError] = useState("");
   const [registerFormData, setRegisterFormData] = useState({
     name: "",
@@ -77,7 +77,7 @@ export default function Login() {
     <div>
       <div className="wrapper">
         <div className="blue-div">
-          <div>
+          <div className="blue-div-content">
             <img src={Art} alt="Art" />
             <h2>Welcome aboard my friend</h2>
             <p>Just a couple of clicks and we start</p>
