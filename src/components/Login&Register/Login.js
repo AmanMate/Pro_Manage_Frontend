@@ -6,6 +6,7 @@ import Art from "../../assets/images/Art.png";
 import Name from "../../assets/icons/Frame 1036.png";
 import Email from "../../assets/icons/mdi-light_email.png";
 import Password from "../../assets/icons/lock.png";
+import View from "../../assets/icons/view.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,20 +16,26 @@ export default function Login() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [loginFormData, setLoginFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (event) => {
-    setRegisterFormData({ ...registerFormData, [event.target.name]: event.target.value });
+    setRegisterFormData({
+      ...registerFormData,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const handleFormChange = (event) => {
-    setLoginFormData({ ...loginFormData, [event.target.name]: event.target.value });
+    setLoginFormData({
+      ...loginFormData,
+      [event.target.name]: event.target.value,
+    });
   };
 
   useEffect(() => {
@@ -39,8 +46,19 @@ export default function Login() {
     }
   }, [registerFormData]);
 
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async () => {
-    if (!registerFormData.name || !registerFormData.email || !registerFormData.password) {
+    if (
+      !registerFormData.name ||
+      !registerFormData.email ||
+      !registerFormData.password
+    ) {
       alert("Field can't be empty");
       return;
     }
@@ -88,12 +106,36 @@ export default function Login() {
             <div className="sign-in-div">
               <h1>Login</h1>
               <div className="input-wrapper">
-                <img src={Email} alt="Email Icon" className="input-icon" />
-                <input type="email" name="email" onChange={handleFormChange} placeholder="Email" />
+                <img
+                  src={Email}
+                  alt="Email Icon"
+                  className="input-icon sigin-input-wrapper"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  onChange={handleFormChange}
+                  placeholder="Email"
+                />
               </div>
               <div className="input-wrapper">
-                <img src={Password} alt="Password Icon" className="input-icon" />
-                <input type="password" name="password" onChange={handleFormChange} placeholder="Password" />
+                <img
+                  src={Password}
+                  alt="Password Icon"
+                  className="input-icon"
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  onChange={handleFormChange}
+                  placeholder="Password"
+                />
+                <button
+                  onClick={toggleShowPassword}
+                  className="show-pass-signin"
+                >
+                  <img src={View} />
+                </button>
               </div>
             </div>
           )}
@@ -102,19 +144,59 @@ export default function Login() {
               <h1>Register</h1>
               <div className="input-wrapper">
                 <img src={Name} alt="Name Icon" className="input-icon" />
-                <input type="text" name="name" onChange={handleChange} placeholder="Name" />
+                <input
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  placeholder="Name"
+                />
               </div>
               <div className="input-wrapper">
                 <img src={Email} alt="Email Icon" className="input-icon" />
-                <input type="email" name="email" onChange={handleChange} placeholder="Email" />
+                <input
+                  type="email"
+                  name="email"
+                  onChange={handleChange}
+                  placeholder="Email"
+                />
               </div>
               <div className="input-wrapper">
-                <img src={Password} alt="Password Icon" className="input-icon" />
-                <input type="password" name="password" onChange={handleChange} placeholder="Password" />
+                <img
+                  src={Password}
+                  alt="Password Icon"
+                  className="input-icon"
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  onChange={handleChange}
+                  placeholder="Password"
+                />
+                <button
+                  onClick={toggleShowPassword}
+                  className="show-pass-siginup1"
+                >
+                  <img src={View} />
+                </button>
               </div>
               <div className="input-wrapper">
-                <img src={Password} alt="Confirm Password Icon" className="input-icon" />
-                <input type="password" name="confirmPassword" onChange={handleChange} placeholder="Confirm Password" />
+                <img
+                  src={Password}
+                  alt="Confirm Password Icon"
+                  className="input-icon"
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  onChange={handleChange}
+                  placeholder="Confirm Password"
+                />
+                <button
+                  onClick={toggleShowPassword}
+                  className="show-pass-siginup2"
+                >
+                  <img src={View} />
+                </button>{" "}
               </div>
               <div id="confirmPassError">{confirmPassError}</div>
             </div>
@@ -127,7 +209,7 @@ export default function Login() {
                 style={{
                   backgroundColor: "#17A2B8",
                   color: "white",
-                  border: "1px solid #17A2B8"
+                  border: "1px solid #17A2B8",
                 }}
               >
                 Login
@@ -139,7 +221,7 @@ export default function Login() {
                 style={{
                   backgroundColor: "white",
                   color: "#17A2B8",
-                  border: "1px solid #17A2B8"
+                  border: "1px solid #17A2B8",
                 }}
               >
                 Register
@@ -153,7 +235,7 @@ export default function Login() {
                 style={{
                   backgroundColor: "#17A2B8",
                   color: "white",
-                  border: "1px solid #17A2B8"
+                  border: "1px solid #17A2B8",
                 }}
               >
                 Register
@@ -165,7 +247,7 @@ export default function Login() {
                 style={{
                   backgroundColor: "white",
                   color: "#17A2B8",
-                  border: "1px solid #17A2B8"
+                  border: "1px solid #17A2B8",
                 }}
               >
                 Login
