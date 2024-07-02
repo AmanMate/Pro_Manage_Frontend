@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `https://pro-manage-back-end-1.onrender.com/api/v1/auth`;
+const backendUrl = `https://pro-manage-back-end-6wc7.onrender.com/api/v1/auth`;
 
 export const registerUser = async ({ name, email, password }) => {
 
