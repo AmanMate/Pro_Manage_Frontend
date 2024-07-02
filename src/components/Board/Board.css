@@ -18,7 +18,7 @@ button {
 .left,
 .add-people,
 .email-add-buttons,
-.checklist-and-arrow,
+.checklist-heading,
 .priority-edit-row,
 .display-flex {
     display: flex;
@@ -144,7 +144,7 @@ button {
 .board-row {
     margin-top: 20px;
     display: -webkit-inline-box;
-    /* overflow-x: scroll; */
+    overflow-x: scroll ;
     width: 173vh;
 }
 
@@ -155,8 +155,7 @@ button {
 
 .backlog-board-row2 {
     overflow-y: scroll;
-    height: 64vh;
-    
+    height: 65vh;
 }
 
 .backlog-board-row1 img {
@@ -190,7 +189,7 @@ button {
 
 }
 
-.checklist-and-arrow button {
+.checklist-heading button {
     height: 18px;
     transform: translateY(15px);
     background: white;
@@ -207,11 +206,11 @@ button {
     text-align: left;
 }
 
-.checklist-options {
+.checklist-items {
     display: flex;
 }
 
-.checklist-options {
+.checklist-items {
     border: 1px solid #E2E2E2;
     border-radius: 10px;
     width: 95%;
@@ -219,7 +218,7 @@ button {
     padding: 9px;
 }
 
-.checklist-options input {
+.checklist-items input {
     border-radius: 0px;
     height: 13px;
     width: 13px;
@@ -257,7 +256,7 @@ button {
 .board-backlog {
     background: #EEF2F5;
     width: 360px;
-    height: 70vh;
+    height: 73vh;
     /* overflow-y: scroll; */
     border: 11px solid #eef2f5;
     border-radius: 10px;
@@ -295,6 +294,16 @@ button {
     width: 57px;
     height: 25px;
     margin-right: 50px ;
+}
+
+.past-date button{
+    background-color: red;
+    color: white;
+}
+
+.completed-date button{
+    background-color: #63C05B;
+    color: white;
 }
 
 .progress-button button {
@@ -406,4 +415,34 @@ button {
     color: #CF3636;
     border: 1px solid #CF3636 !important;
     transform: translateX(5px);
+}
+
+
+.due-date button {
+    font-weight: 500;
+    line-height: 12px;
+    text-align: left;
+    border: none;
+    background: #EEECEC;
+    border-radius: 10px;
+    color: #767575;
+    font-size: 10px;
+    margin: 5px 2px;
+    text-align: center;
+    width: 53px;
+    height: 25px;
+}
+
+.move-task-buttons button {
+    font-weight: 500;
+    line-height: 12px;
+    border: none;
+    background: #EEECEC;
+    border-radius: 10px;
+    color: #767575;
+    font-size: 10px;
+    margin: 5px 2px;
+    text-align: center;
+    width: 53px;
+    height: 25px;
 }

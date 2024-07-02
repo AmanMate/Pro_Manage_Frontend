@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
-import { updateCreateTaskById, deleteTaskById, getCreateTaskById, getAllTaskById } from "../../api/tasks";
+import { updateCreateTaskById, deleteTaskById, getCreateTaskById, getAllTaskById, getTaskStatusById, updateTaskStatusById } from "../../api/tasks";
 import "./Board.css";
 import database1 from "../../assets/icons/database1.png";
 import Group544 from "../../assets/icons/Group544.png";
@@ -20,15 +21,22 @@ export default function Board() {
   const buttonRef = useRef(null);
   
   const [isVisible, setIsVisible] = useState(false); // Renamed isOpen
-  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [dueDateStyles, setDueDateStyles] = useState({});
   
+  const handleOpenModal = () => setIsVisible(true);
+  const handleCloseModal = () => setIsVisible(false);
+  const handleDeleteConfirmed = () => {
+    handleSubmenuButtonClick(); // Perform deletion logic here
+    handleCloseModal();
+  };
+
   useEffect(() => {
     const userNameFromStorage = localStorage.getItem("name");
     if (userNameFromStorage) {
       setUserName(userNameFromStorage.replace(/"/g, ''));
     }
   }, []);
-  
+    
   useEffect(() => {
     const getOrdinalSuffix = (day) => {
       if (day > 3 && day < 21) return "th";
@@ -65,15 +73,15 @@ export default function Board() {
       
       return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
     };
-    
+
     const now = new Date();
     setCurrentDate(formatDate(now));
   }, []);
-  
+    
   const sortTasks = (interval) => {
     let sortedTasks = [...tasks];
     const currentDate = new Date();
-    
+  
     switch (interval) {
       case "today":
         sortedTasks = sortedTasks.filter((task) => {
@@ -86,7 +94,7 @@ export default function Board() {
           );
         });
         break;
-        case "week":
+      case "week":
         sortedTasks = sortedTasks.filter((task) => {
           const taskDate = new Date(task.createdAt);
           const diffTime = Math.abs(currentDate - taskDate);
@@ -94,47 +102,57 @@ export default function Board() {
           return diffDays <= 7;
         });
         break;
-        case "month":
-          sortedTasks = sortedTasks.filter((task) => {
+      case "month":
+        sortedTasks = sortedTasks.filter((task) => {
           const taskDate = new Date(task.createdAt);
           return taskDate.getMonth() === currentDate.getMonth();
         });
         break;
-        default:
-          break;
-        }
-        setTasks(sortedTasks);
-      };
-      
-      useEffect(() => {
-        sortTasks("week");
-      }, []);
-      
-      const toggleSubmenu = (event) => {
-        event.stopPropagation();
-        setIsOpen(!isOpen);
-      };
-      
-      useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (
-            submenuRef.current &&
-            !submenuRef.current.contains(event.target) &&
-            buttonRef.current &&
+      default:
+        break;
+    }
+  
+    // Set dueDateStyles based on the task's due date
+    sortedTasks.forEach((task) => {
+      const { isPastDate } = formatDate(task.dueDate);
+      setDueDateStyles((prevStyles) => ({
+        ...prevStyles,
+        [task.id]: isPastDate ? "past-date" : "",
+      }));
+    });
+  
+    setTasks(sortedTasks);
+  };
+
+  useEffect(() => {
+    sortTasks("week");
+  }, []);
+  
+  const toggleSubmenu = (event) => {
+    event.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        submenuRef.current &&
+        !submenuRef.current.contains(event.target) &&
+        buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
         setIsOpen(false);
       }
     };
-    
+
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
-  
-  
+
+
   useEffect(() => {
     const fetchTasks = async () => {
       const userId = localStorage.getItem("userId");
@@ -156,11 +174,6 @@ export default function Board() {
     // Handle the button click action here
     setIsOpen(false);
   };
-  
-  const displayNoneFunction = () => {
-    setDisplayNone(!displayNone);
-  };
-
 
   const showModal = () => {
     setShow(true);
@@ -171,11 +184,24 @@ export default function Board() {
     box2: false,
     box3: false,
   });
+  
+  const displayNoneFunction = () => {
+    setDisplayNone(!displayNone);
+  };
 
-  const handleCheckboxChange = (event) => {
-    setCheckboxes({
-      ...checkboxes,
-      [event.target.name]: event.target.checked,
+  const handleCheckboxChange = (taskId, itemId) => {
+    setTasks((prevTasks) => {
+      return prevTasks.map((task) => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            checklistItems: task.checklistItems.map((item) =>
+              item.id === itemId ? { ...item, checked: !item.checked } : item
+            ),
+          };
+        }
+        return task;
+      });
     });
   };
 
@@ -189,54 +215,42 @@ export default function Board() {
   ];
 
   const formatDate = (date) => {
-    const options = {  month: "long", day: "numeric" };
-    return new Date(date).toLocaleDateString(undefined, options);
+    const options = { month: "long", day: "numeric" };
+    const formattedDate = new Date(date).toLocaleDateString(undefined, options);
+    const isPastDate = new Date(date) > new Date();
+    return { formattedDate, isPastDate };
   };
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      await updateCreateTaskById(taskId, { status: newStatus });
+      // Perform API call to update the task status in the backend
+      // For now, assume it succeeds and update locally
       const updatedTasks = tasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
       );
       setTasks(updatedTasks);
+  
+      // Set dueDateStyles based on the task's new status
+      if (newStatus === "completed") {
+        setDueDateStyles((prevStyles) => ({
+          ...prevStyles,
+          [taskId]: "completed-date",
+        }));
+      } else {
+        const { isPastDate } = formatDate(
+          updatedTasks.find((task) => task.id === taskId).dueDate
+        );
+        setDueDateStyles((prevStyles) => ({
+          ...prevStyles,
+          [taskId]: isPastDate ? "past-date" : "",
+        }));
+      }
     } catch (error) {
       console.error("Failed to update task status", error);
     }
-  };  
+  }; 
 
-  const editTask = async (taskId, updatedData) => {
-    try {
-      const response = await updateCreateTaskById(taskId, updatedData);
-      setTasks(tasks.map(task => task.id === taskId ? response.task : task));
-    } catch (error) {
-      console.error("Failed to edit task", error);
-    }
-  };  
-  
-  const handleOpenModal = (taskId) => {
-    setTaskToDelete(taskId); // Set task ID to delete
-    setIsVisible(true);
-  };
 
-  const handleCloseModal = () => {
-    setTaskToDelete(null); // Clear task ID
-    setIsVisible(false);
-  };
-  
-  const handleDeleteConfirmed = async () => {
-    if (taskToDelete) {
-      try {
-        await deleteTaskById(taskToDelete);
-        setTasks(tasks.filter(task => task.id !== taskToDelete));
-      } catch (error) {
-        console.error("Failed to delete task", error);
-      }
-      handleCloseModal();
-    }
-  };
-  
-  
   return (
     <div style={{ display: "flex" }}>
       <Navbar />
@@ -326,7 +340,7 @@ export default function Board() {
                           className="display-submenu-div"
                           ref={submenuRef}
                         >
-                          <button onClick={() => editTask(task.id, {name: 'Updated Task Name'})}>
+                          <button onClick={handleSubmenuButtonClick}>
                             Edit
                           </button>
                           <button onClick={handleSubmenuButtonClick}>
@@ -334,7 +348,7 @@ export default function Board() {
                           </button>
                           <button
                             id="delete-button-submenu"
-                            onClick={() => handleOpenModal(task.id)}
+                            onClick={handleOpenModal}
                           >
                             Delete
                           </button>
@@ -382,7 +396,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={handleCheckboxChange}
+                            onChange={() => handleCheckboxChange(task.id, item.id)}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -392,8 +406,8 @@ export default function Board() {
                     </div>
                   )}
                   <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>{formatDate(task.dueDate)}</button>
+                    <div className={`date-button ${dueDateStyles[task.id]}`}>
+                      <button>{formatDate(task.dueDate).formattedDate}</button>
                     </div>
                     <div className="progress-button">
                       <button onClick={() => updateTaskStatus(task.id, "in-progress")}>Progress</button>
@@ -508,7 +522,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={handleCheckboxChange}
+                            onChange={() => handleCheckboxChange(task.id, item.id)}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -518,8 +532,8 @@ export default function Board() {
                     </div>
                   )}
                   <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>{formatDate(task.dueDate)}</button>
+                    <div className={`date-button ${dueDateStyles[task.id]}`}>
+                      <button>{formatDate(task.dueDate).formattedDate}</button>
                     </div>
                     <div className="progress-button">
                       <button onClick={() => updateTaskStatus(task.id, "in-progress")}>Progress</button>
@@ -628,7 +642,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={handleCheckboxChange}
+                            onChange={() => handleCheckboxChange(task.id, item.id)}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -638,8 +652,8 @@ export default function Board() {
                     </div>
                   )}
                   <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>{formatDate(task.dueDate)}</button>
+                    <div className={`date-button ${dueDateStyles[task.id]}`}>
+                      <button>{formatDate(task.dueDate).formattedDate}</button>
                     </div>
                     <div className="backlog-button">
                       <button onClick={() => updateTaskStatus(task.id, "backlog")}>Backlog</button>
@@ -748,7 +762,7 @@ export default function Board() {
                           <input
                             name={item.id}
                             checked={item.checked}
-                            onChange={handleCheckboxChange}
+                            onChange={() => handleCheckboxChange(task.id, item.id)}
                             className="checklist-member"
                             type="checkbox"
                           />
@@ -758,8 +772,8 @@ export default function Board() {
                     </div>
                   )}
                   <div className="buttons-div display-flex">
-                    <div className="date-button">
-                      <button>{formatDate(task.dueDate)}</button>
+                    <div className={`date-button ${dueDateStyles[task.id]}`}>
+                      <button>{formatDate(task.dueDate).formattedDate}</button>
                     </div>
                     <div className="backlog-button">
                       <button onClick={() => updateTaskStatus(task.id, "backlog")}>Backlog</button>
@@ -780,3 +794,677 @@ export default function Board() {
     </div>
   );
 }
+
+
+import React, { useState, useRef, useEffect } from "react";
+import Navbar from "../Navbar/Navbar";
+import { updateCreateTaskById, deleteTaskById, getCreateTaskById, getAllTaskById, getTaskStatusById, updateTaskStatusById } from "../../api/tasks";
+import "./Board.css";
+import database1 from "../../assets/icons/database1.png";
+import Group544 from "../../assets/icons/Group544.png";
+import codicon_collapse from "../../assets/icons/codicon_collapse-all.png";
+import AddTask from "./AddTask";
+
+export default function Board() {
+  const [show, setShow] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [currentDate, setCurrentDate] = useState("");
+  const [sortBy, setSortBy] = useState("week");
+  const [displayNone, setDisplayNone] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const submenuRef = useRef(null);
+  const buttonRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [dueDateStyles, setDueDateStyles] = useState({});
+
+  useEffect(() => {
+    const userNameFromStorage = localStorage.getItem("name");
+    if (userNameFromStorage) {
+      setUserName(userNameFromStorage.replace(/"/g, ''));
+    }
+  }, []);
+
+  useEffect(() => {
+    const formatDate = (date) => {
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const day = date.getDate();
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
+    };
+
+    const getOrdinalSuffix = (day) => {
+      if (day > 3 && day < 21) return "th";
+      switch (day % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
+    };
+
+    const now = new Date();
+    setCurrentDate(formatDate(now));
+  }, []);
+
+  const sortTasks = (interval) => {
+    let sortedTasks = [...tasks];
+    const currentDate = new Date();
+
+    switch (interval) {
+      case "today":
+        sortedTasks = sortedTasks.filter((task) => {
+          const taskDate = new Date(task.createdAt);
+          return (
+            taskDate.getDate() === currentDate.getDate() &&
+            taskDate.getMonth() === currentDate.getMonth() &&
+            taskDate.getFullYear() === currentDate.getFullYear()
+          );
+        });
+        break;
+      case "week":
+        sortedTasks = sortedTasks.filter((task) => {
+          const taskDate = new Date(task.createdAt);
+          const diffTime = Math.abs(currentDate - taskDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return diffDays <= 7;
+        });
+        break;
+      case "month":
+        sortedTasks = sortedTasks.filter((task) => {
+          const taskDate = new Date(task.createdAt);
+          return taskDate.getMonth() === currentDate.getMonth();
+        });
+        break;
+      default:
+        break;
+    }
+
+    sortedTasks.forEach((task) => {
+      const { isPastDate } = formatDate(task.dueDate);
+      setDueDateStyles((prevStyles) => ({
+        ...prevStyles,
+        [task.id]: isPastDate ? "past-date" : "",
+      }));
+    });
+
+    setTasks(sortedTasks);
+  };
+
+  useEffect(() => {
+    sortTasks(sortBy);
+  }, [sortBy, tasks]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        submenuRef.current &&
+        !submenuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        try {
+          const response = await getAllTaskById(userId);
+          setTasks(response.tasks);
+        } catch (error) {
+          console.error("Failed to fetch tasks", error);
+        }
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  const handleCheckboxChange = (taskId, itemId) => {
+    setTasks((prevTasks) => {
+      return prevTasks.map((task) => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            checklistItems: task.checklistItems.map((item) =>
+              item.id === itemId ? { ...item, checked: !item.checked } : item
+            ),
+          };
+        }
+        return task;
+      });
+    });
+  };
+
+  const addNewTask = (task) => {
+    setTasks([...tasks, task]);
+  };
+
+  const updateTaskStatus = async (taskId, newStatus) => {
+    try {
+      const updatedTasks = tasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      );
+      setTasks(updatedTasks);
+
+      if (newStatus === "completed") {
+        setDueDateStyles((prevStyles) => ({
+          ...prevStyles,
+          [taskId]: "completed-date",
+        }));
+      } else {
+        const { isPastDate } = formatDate(updatedTasks.find((task) => task.id === taskId).dueDate);
+        setDueDateStyles((prevStyles) => ({
+          ...prevStyles,
+          [taskId]: isPastDate ? "past-date" : "",
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to update task status", error);
+    }
+  };
+
+  const formatDate = (date) => {
+    const options = { month: "long", day: "numeric" };
+    const formattedDate = new Date(date).toLocaleDateString(undefined, options);
+    const isPastDate = new Date(date) < new Date();
+    return { formattedDate, isPastDate };
+  };
+
+  return (
+    <div style={{ display: "flex" }}>
+      <Navbar />
+      <div className="wrapper-board">
+        <div className="top-row">
+          <div className="welcome">
+            <p>Welcome {userName}</p>
+          </div>
+          <div className="date">
+            <p>{currentDate}</p>
+          </div>
+        </div>
+        <div className="second-row">
+          <div className="left">
+            <h2>Board</h2>
+            <div className="add-people">
+              <img src={database1} alt="ig" />
+              <button onClick={() => setShow(true)}>Add People</button>
+            </div>
+            {show && (
+              <div className="modal-wrapper">
+                <div className="container">
+                  <p>Add people to the board</p>
+                  <input placeholder="Enter the email" />
+                  <div className="email-add-buttons">
+                    <button onClick={() => setShow(false)} className="add-email-cancel-button">
+                      Cancel
+                    </button>
+                    <button className="add-email-add-button">Add Email</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="right">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="today">Today</option>
+              <option value="week">This week</option>
+              <option value="month">This month</option>
+            </select>
+          </div>
+        </div>
+        <div className="board-row">
+          {["backlog", "to-do", "in-progress", "completed"].map((status) => (
+            <div className="board-backlog" key={status}>
+              <div className="backlog-board-row1">
+                <h3>{status.replace("-", " ").toUpperCase()}</h3>
+                {status === "to-do" && <AddTask addNewTask={addNewTask} />}
+                <img
+                  onClick={() => setDisplayNone(!displayNone)}
+                  src={codicon_collapse}
+                  alt="collapse"
+                />
+              </div>
+              <div className="backlog-board-row2" id={status}>
+                {tasks.filter((task) => task.status === status).map((task) => (
+                  <div key={task.id} className="card-section">
+                    <div className="priority-edit-row">
+                      <div
+                        className="small-circle"
+                        style={{
+                          backgroundColor:
+                            task.priority === "high"
+                              ? "red"
+                              : task.priority === "moderate"
+                              ? "yellow"
+                              : "green",
+                        }}
+                      ></div>
+                      <div className="priority">{task.priority} Priority</div>
+                      <div className="edit">
+                        <img src={Group544} alt="edit" />
+                      </div>
+                    </div>
+                    <div className="board-row2">
+                      <div className="due-date">
+                        Due Date:{" "}
+                        <span className={dueDateStyles[task.id]}>
+                          {formatDate(task.dueDate).formattedDate}
+                        </span>
+                      </div>
+                      <div className="task-title">{task.title}</div>
+                      <div className="task-owner">
+                        <div
+                          className={`owner-circle ${task.owner && "blue-bg"}`}
+                        >
+                          {task.owner ? task.owner[0] : "?"}
+                        </div>
+                        {task.owner}
+                      </div>
+                      <div className="task-details">{task.details}</div>
+                    </div>
+                    <div className="board-row3">
+                      <div className="checklist">
+                        <div className="checklist-heading">
+                          <h4>Checklist</h4>
+                        </div>
+                        <div className="checklist-items">
+                          {task.checklistItems.map((item) => (
+                            <div key={item.id}>
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={item.checked}
+                                  onChange={() =>
+                                    handleCheckboxChange(task.id, item.id)
+                                  }
+                                />
+                                {item.text}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="move-task-buttons">
+                      {status !== "backlog" && (
+                        <button onClick={() => updateTaskStatus(task.id, "backlog")}>
+                          Move to Backlog
+                        </button>
+                      )}
+                      {status !== "to-do" && (
+                        <button onClick={() => updateTaskStatus(task.id, "to-do")}>
+                          Move to To-Do
+                        </button>
+                      )}
+                      {status !== "in-progress" && (
+                        <button onClick={() => updateTaskStatus(task.id, "in-progress")}>
+                          Move to In-Progress
+                        </button>
+                      )}
+                      {status !== "completed" && (
+                        <button onClick={() => updateTaskStatus(task.id, "completed")}>
+                          Move to Completed
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+// export default function Board() {
+//   const [show, setShow] = useState(false);
+//   const [tasks, setTasks] = useState([]);
+//   const [currentDate, setCurrentDate] = useState("");
+//   const [sortBy, setSortBy] = useState("week");
+//   const [displayNone, setDisplayNone] = useState(true);
+//   const [userName, setUserName] = useState("");
+//   const [isOpen, setIsOpen] = useState(false);
+//   const submenuRef = useRef(null);
+//   const buttonRef = useRef(null);
+//   const [isVisible, setIsVisible] = useState(false);
+//   const [dueDateStyles, setDueDateStyles] = useState({});
+
+//   useEffect(() => {
+//     const userNameFromStorage = localStorage.getItem("name");
+//     if (userNameFromStorage) {
+//       setUserName(userNameFromStorage.replace(/"/g, ''));
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     const formatDate = (date) => {
+//       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//       const day = date.getDate();
+//       const month = monthNames[date.getMonth()];
+//       const year = date.getFullYear();
+//       return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
+//     };
+
+//     const getOrdinalSuffix = (day) => {
+//       if (day > 3 && day < 21) return "th";
+//       switch (day % 10) {
+//         case 1:
+//           return "st";
+//         case 2:
+//           return "nd";
+//         case 3:
+//           return "rd";
+//         default:
+//           return "th";
+//       }
+//     };
+
+//     const now = new Date();
+//     setCurrentDate(formatDate(now));
+//   }, []);
+
+//   const sortTasks = (interval) => {
+//     let sortedTasks = [...tasks];
+//     const currentDate = new Date();
+
+//     switch (interval) {
+//       case "today":
+//         sortedTasks = sortedTasks.filter((task) => {
+//           const taskDate = new Date(task.createdAt);
+//           return (
+//             taskDate.getDate() === currentDate.getDate() &&
+//             taskDate.getMonth() === currentDate.getMonth() &&
+//             taskDate.getFullYear() === currentDate.getFullYear()
+//           );
+//         });
+//         break;
+//       case "week":
+//         sortedTasks = sortedTasks.filter((task) => {
+//           const taskDate = new Date(task.createdAt);
+//           const diffTime = Math.abs(currentDate - taskDate);
+//           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+//           return diffDays <= 7;
+//         });
+//         break;
+//       case "month":
+//         sortedTasks = sortedTasks.filter((task) => {
+//           const taskDate = new Date(task.createdAt);
+//           return taskDate.getMonth() === currentDate.getMonth();
+//         });
+//         break;
+//       default:
+//         break;
+//     }
+
+//     sortedTasks.forEach((task) => {
+//       const { isPastDate } = formatDate(task.dueDate);
+//       setDueDateStyles((prevStyles) => ({
+//         ...prevStyles,
+//         [task.id]: isPastDate ? "past-date" : "",
+//       }));
+//     });
+
+//     setTasks(sortedTasks);
+//   };
+
+//   useEffect(() => {
+//     sortTasks(sortBy);
+//   }, [sortBy, tasks]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (
+//         submenuRef.current &&
+//         !submenuRef.current.contains(event.target) &&
+//         buttonRef.current &&
+//         !buttonRef.current.contains(event.target)
+//       ) {
+//         setIsOpen(false);
+//       }
+//     };
+
+//     window.addEventListener("click", handleClickOutside);
+//     return () => {
+//       window.removeEventListener("click", handleClickOutside);
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     const fetchTasks = async () => {
+//       const userId = localStorage.getItem("userId");
+//       if (userId) {
+//         try {
+//           const response = await getAllTaskById(userId);
+//           setTasks(response.tasks);
+//         } catch (error) {
+//           console.error("Failed to fetch tasks", error);
+//         }
+//       }
+//     };
+//     fetchTasks();
+//   }, []);
+
+//   const handleCheckboxChange = (taskId, itemId) => {
+//     setTasks((prevTasks) => {
+//       return prevTasks.map((task) => {
+//         if (task.id === taskId) {
+//           return {
+//             ...task,
+//             checklistItems: task.checklistItems.map((item) =>
+//               item.id === itemId ? { ...item, checked: !item.checked } : item
+//             ),
+//           };
+//         }
+//         return task;
+//       });
+//     });
+//   };
+
+//   const addNewTask = (task) => {
+//     setTasks([...tasks, task]);
+//   };
+
+//   const updateTaskStatus = async (taskId, newStatus) => {
+//     try {
+//       const updatedTasks = tasks.map((task) =>
+//         task.id === taskId ? { ...task, status: newStatus } : task
+//       );
+//       setTasks(updatedTasks);
+
+//       if (newStatus === "completed") {
+//         setDueDateStyles((prevStyles) => ({
+//           ...prevStyles,
+//           [taskId]: "completed-date",
+//         }));
+//       } else {
+//         const { isPastDate } = formatDate(updatedTasks.find((task) => task.id === taskId).dueDate);
+//         setDueDateStyles((prevStyles) => ({
+//           ...prevStyles,
+//           [taskId]: isPastDate ? "past-date" : "",
+//         }));
+//       }
+//     } catch (error) {
+//       console.error("Failed to update task status", error);
+//     }
+//   };
+
+//   const formatDate = (date) => {
+//     const options = { month: "long", day: "numeric" };
+//     const formattedDate = new Date(date).toLocaleDateString(undefined, options);
+//     const isPastDate = new Date(date) < new Date();
+//     return { formattedDate, isPastDate };
+//   };
+
+//   return (
+//     <div style={{ display: "flex" }}>
+//       <Navbar />
+//       <div className="wrapper-board">
+//         <div className="top-row">
+//           <div className="welcome">
+//             <p>Welcome {userName}</p>
+//           </div>
+//           <div className="date">
+//             <p>{currentDate}</p>
+//           </div>
+//         </div>
+//         <div className="second-row">
+//           <div className="left">
+//             <h2>Board</h2>
+//             <div className="add-people">
+//               <img src={database1} alt="ig" />
+//               <button onClick={() => setShow(true)}>Add People</button>
+//             </div>
+//             {show && (
+//               <div className="modal-wrapper">
+//                 <div className="container">
+//                   <p>Add people to the board</p>
+//                   <input placeholder="Enter the email" />
+//                   <div className="email-add-buttons">
+//                     <button onClick={() => setShow(false)} className="add-email-cancel-button">
+//                       Cancel
+//                     </button>
+//                     <button className="add-email-add-button">Add Email</button>
+//                   </div>
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+//           <div className="right">
+//             <select
+//               value={sortBy}
+//               onChange={(e) => setSortBy(e.target.value)}
+//             >
+//               <option value="today">Today</option>
+//               <option value="week">This week</option>
+//               <option value="month">This month</option>
+//             </select>
+//           </div>
+//         </div>
+//         <div className="board-row">
+//           {["backlog", "to-do", "in-progress", "completed"].map((status) => (
+//             <div className="board-backlog" key={status}>
+//               <div className="backlog-board-row1">
+//                 <h3>{status.replace("-", " ").toUpperCase()}</h3>
+//                 {status === "to-do" && <AddTask addNewTask={addNewTask} />}
+//                 <img
+//                   onClick={() => setDisplayNone(!displayNone)}
+//                   src={codicon_collapse}
+//                   alt="collapse"
+//                 />
+//               </div>
+//               <div className="backlog-board-row2">
+//                 {tasks.filter((task) => task.status === status).map((task) => (
+//                   <div key={task.id} className="card-section">
+//                     <div className="priority-edit-row">
+//                       <div
+//                         className="small-circle"
+//                         style={{
+//                           backgroundColor:
+//                             task.priority === "high"
+//                               ? "red"
+//                               : task.priority === "moderate"
+//                               ? "yellow"
+//                               : "green",
+//                         }}
+//                       ></div>
+//                       <div className="priority">{task.priority} Priority</div>
+//                       <div className="edit">
+//                         <img src={Group544} alt="edit" />
+//                       </div>
+//                     </div>
+//                     <div className="board-row2">
+//                       <div className="due-date">
+//                         Due Date:{" "}
+//                         <span className={dueDateStyles[task.id]}>
+//                           {formatDate(task.dueDate).formattedDate}
+//                         </span>
+//                       </div>
+//                       <div className="task-title">{task.title}</div>
+//                       <div className="task-owner">
+//                         <div
+//                           className={`owner-circle ${task.owner && "blue-bg"}`}
+//                         >
+//                           {task.owner ? task.owner[0] : "?"}
+//                         </div>
+//                         {task.owner}
+//                       </div>
+//                       <div className="task-details">{task.details}</div>
+//                     </div>
+//                     <div className="board-row3">
+//                       <div className="checklist">
+//                         <div className="checklist-heading">
+//                           <h4>Checklist</h4>
+//                         </div>
+//                         <div className="checklist-items">
+//                           {task.checklistItems.map((item) => (
+//                             <div key={item.id}>
+//                               <label>
+//                                 <input
+//                                   type="checkbox"
+//                                   checked={item.checked}
+//                                   onChange={() =>
+//                                     handleCheckboxChange(task.id, item.id)
+//                                   }
+//                                 />
+//                                 {item.text}
+//                               </label>
+//                             </div>
+//                           ))}
+//                         </div>
+//                       </div>
+//                     </div>
+//                     <div className="move-task-buttons">
+//                       {status !== "backlog" && (
+//                         <button onClick={() => updateTaskStatus(task.id, "backlog")}>
+//                           Move to Backlog
+//                         </button>
+//                       )}
+//                       {status !== "to-do" && (
+//                         <button onClick={() => updateTaskStatus(task.id, "to-do")}>
+//                           Move to To-Do
+//                         </button>
+//                       )}
+//                       {status !== "in-progress" && (
+//                         <button onClick={() => updateTaskStatus(task.id, "in-progress")}>
+//                           Move to In-Progress
+//                         </button>
+//                       )}
+//                       {status !== "completed" && (
+//                         <button onClick={() => updateTaskStatus(task.id, "completed")}>
+//                           Move to Completed
+//                         </button>
+//                       )}
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
