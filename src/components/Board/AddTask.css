@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translate(137px, 1px);
+    transform: translate(77px, 5px);
 }
 
 .add-task img {
@@ -36,17 +36,12 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 666px;
-    height: 475px;
+    height: 359px;
     top: 214px;
     left: 451px;
     z-index: 1001;
 }
 
-.modal form {
-    height: 475px;
-    /* overflow-y: scroll; */
-    padding-inline: 20px;
-}
 
 
 .modal .button-group {
@@ -97,21 +92,21 @@
 }
 
 .checklist-items {
-    padding-left: 5px;
-    width: 639px;
-    height: 140px;
-    overflow-y: scroll ;
-    /* overflow-x: scroll hidden; */
     margin-top: 10px;
 }
 
-/*  */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    width: 639px;
+    transform: translate(-2px, 10px);
+}
 
 .checklist-item .checklist-input {
     position: relative;
     display: inline-block;
-    width: 629px;
-    height: 50px;
+    width: calc(100% - 30px);
     border: 1px solid #E2E2E2;
     border-radius: 11px;
 }
@@ -125,7 +120,8 @@
     gap: 0px;
     border-radius: 6px 0px 0px 0px;
     border: 2px 0px 0px 0px;
-    transform: translate(29px, 4px);
+    opacity: 0px;
+    transform: translate(29px, 5px);
 }
 
 .checklist-item .checklist-input input[type="text"] {
@@ -136,7 +132,7 @@
     gap: 10px;
     border-radius: 12px;
     border: 1px solid #fff;
-    transform: translate(74px, 0px);
+    transform: translate(84px, 0px);
 }
 
 .checklist-input {
@@ -154,9 +150,9 @@
 }
 
 .checklist-item .delete-button {
-    width: 10px;
-    height: 20px;
-    /* margin-left: -30px; */
+    width: 30px;
+    height: 30px;
+    margin-left: -30px;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -164,14 +160,15 @@
     align-items: center;
     justify-content: center;
     background-image: url("../../assets/icons/Delete.png");
-    background-size: 17px;
-    transform: translate(-28px, 16px);
+    background-size: cover;
+    transform: translate(-28px, 12px);
 }
 
 .add-new-checklist-item {
     width: 100px;
     height: 19px;
     gap: 10px;
+    opacity: 0px;
     color: #767575;
     background-color: #fff;
     border: none;
@@ -179,9 +176,14 @@
     font-weight: 500;
     line-height: 19.36px;
     text-align: center;
-    transform: translate(-51px, -6px);
+    transform: translate(-51px, 7px);
 }
 
+.modal form {
+    height: 370px;
+    overflow-y: scroll;
+    padding-inline: 20px;
+}
 
 .Priority {
     display: flex;
@@ -227,9 +229,8 @@
 }
 
 .last-row button {
-    margin: 10px 10px 0px 0px;
+    margin: 20px;
     border-radius: 10px;
-    transform: translate(0px, 10px);
 }
 
 .priority-edit-row .small-circle {
@@ -250,19 +251,5 @@
 #save-button-last {
     background: #17A2B8;
     color: white;
-    border: 2px solid #17A2B8;
-}
-
-.right select {
-    border: none !important;
-}
-
-.right select:focus {
-    border: none;
-}
-
-.dueDate {
-    width: 200px;
-    margin: 0px 30px 0px 0px;
-    transform: translate(-58px, 4px);
+    border: 2px solid white;
 }

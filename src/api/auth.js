@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `https://pro-manage-back-end-6wc7.onrender.com/api/v1/auth`;
+const backendUrl = `http://localhost:4002/api/v1/auth`;
 
 export const registerUser = async ({ name, email, password }) => {
 
@@ -41,7 +41,7 @@ export const loginUser = async ({ email, password }) => {
           if (response.data?.token){
             localStorage.setItem("token", JSON.stringify(response.data?.token));
             localStorage.setItem("name", JSON.stringify(response.data?.name));
-            localStorage.setItem("userId", (response.data?.userId));
+            localStorage.setItem("userId", JSON.stringify(response.data?.userId));
           }
         return true;
     } catch (error) {
@@ -54,9 +54,7 @@ export const loginUser = async ({ email, password }) => {
 export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
     console.log('name ->', name);
     console.log('email ->', email);
-    console.log('userId ->', localStorage.getItem("userId"));
   try {
-    const userId = localStorage.getItem("userId");
     const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
       await axios(`${backendUrl}/settings`, {
@@ -70,7 +68,6 @@ export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
             email,
             oldPassword,
             newPassword,
-            userId
           }),
         });
       return;
@@ -81,18 +78,19 @@ export const updateUser = async ({ name, email, oldPassword, newPassword }) => {
 };
 
 
-export const getUserDetails = async (email) => {
+export const getUserDetails = async (oldEmail, oldName) => {
   const token = JSON.parse(localStorage.getItem("token"));
       axios.defaults.headers.common["Authorization"] = token;
   try {
-    const response = await axios(`${backendUrl}/getUserDetails`, {
+    const response = await axios(`${backendUrl}/settings`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({
-        email       
-      }),
+      params: {
+        oldEmail,
+        oldName,
+      },
     });
     return response.data;
   } catch (error) {
