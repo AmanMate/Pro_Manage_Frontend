@@ -34,6 +34,18 @@
     margin-bottom: 60px;
 }
 
+.show-pass-signin,
+.show-pass-siginup1,
+.show-pass-siginup2 {
+    background: none;
+    border: none;
+    position: absolute;
+    height: 33px;
+    width: 49px;
+    margin: 0px;
+    padding: 0px;
+    transform: translate(397px, -48px);
+}
 
 
 .blue-div {

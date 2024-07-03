@@ -6,6 +6,7 @@ import "./Settings.css";
 import User from "../../assets/icons/Frame 1036.png";
 import Email from "../../assets/icons/mdi-light_email.png";
 import Password from "../../assets/icons/lock.png";
+import View from "../../assets/icons/view.png";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -20,6 +21,12 @@ export default function Settings() {
 
   const [inputName, setInputName] = useState("");
   const [inputEmail, setInputEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -83,20 +90,32 @@ export default function Settings() {
           <div className="input-wrapper">
             <img src={Password} alt="Old Password Icon" className="input-icon" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="oldPassword"
               placeholder="Old Password"
               onChange={handleUpdate}
             />
+            <button
+                  onClick={toggleShowPassword}
+                  className="show-pass-old"
+                >
+                  <img src={View} />
+                </button>
           </div>
           <div className="input-wrapper">
             <img src={Password} alt="New Password Icon" className="input-icon" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="newPassword"
               placeholder="New Password"
               onChange={handleUpdate}
             />
+            <button
+                  onClick={toggleShowPassword}
+                  className="show-pass-new"
+                >
+                  <img src={View} />
+                </button>
           </div>
         </div>
         <button className="updateBtn" onClick={handleUpdateSubmit}>

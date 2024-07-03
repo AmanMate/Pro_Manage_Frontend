@@ -189,6 +189,10 @@ export default function Board() {
     setDisplayNone(!displayNone);
   };
 
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
+
   const handleCheckboxChange = (taskId, itemId) => {
     setTasks((prevTasks) => {
       return prevTasks.map((task) => {
@@ -515,6 +519,8 @@ export default function Board() {
                       /{task.checklistItems.length})
                     </p>
                   </div>
+{}
+                  
                   {displayNone && (
                     <div className="checklist">
                       {task.checklistItems.map((item) => (
