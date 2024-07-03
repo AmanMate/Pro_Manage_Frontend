@@ -55,25 +55,3 @@ input[type="password"] {
   background: #17A2B8;
   border: 1px solid #D0D0D0;
 }
-
-.show-pass-new{
-  background: none;
-    border: none;
-    position: absolute;
-    height: 33px;
-    width: 49px;
-    margin: 0px;
-    padding: 0px;
-    transform: translate(397px, -48px);
-}
-
-.show-pass-old {
-  background: none;
-    border: none;
-    position: absolute;
-    height: 33px;
-    width: 49px;
-    margin: 0px;
-    padding: 0px;
-    transform: translate(397px, -48px);
-}
