@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `https://pro-manage-back-end-6wc7.onrender.com/api/v1/task`;
+const backendUrl = `http://localhost:4002/api/v1/task`;
 
 export const createTask = async ({ title, priority, assignee, checklistItems, dueDate }) => {
   try {
@@ -15,7 +15,7 @@ export const createTask = async ({ title, priority, assignee, checklistItems, du
             priority,
             assignee,
             checklistItems,
-            dueDate
+            dueDate,
           }),
       });
       return;
@@ -25,119 +25,83 @@ export const createTask = async ({ title, priority, assignee, checklistItems, du
   }
 };
 
-export const getCreateTaskById = async (taskId) => {
+
+export const getCreateTaskById = async (taskId, userId) => {
   try { 
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    await axios(`${backendUrl}/getTask`, {
-      method: "POST",
+    await axios(`${backendUrl}/create-task/${taskId}/${userId}`, {
+      action: " ",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
-       taskId,
+       
       }),
     });
     return;
   } catch (error) {
     console.log(error);
-    alert("Something went wrong");
+    alert("Something went wrong")
   }
 };
 
 export const updateCreateTaskById = async (taskId, updateData) => {
   try { 
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    await axios(`${backendUrl}/updateTask`, {
+    await axios(`${backendUrl}/update/${taskId}/`, {
+      action: " ",
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
        updateData,
-       taskId
       }),
     });
+    const token = JSON.parse(localStorage.getItem("token"));
+    axios.defaults.headers.common["Authorization"] = token;
     return;
   } catch (error) {
     console.log(error);
-    alert("Something went wrong");
+    alert("Something went wrong")
   }
 };
 
 export const deleteTaskById = async (taskId) => {
   try { 
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    await axios(`${backendUrl}/deleteTask`, {
+    await axios(`${backendUrl}/delete/${taskId}/`, {
+      action: " ",
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
-        taskId
+      
       }),
     });
     return;
   } catch (error) {
     console.log(error);
-    alert("Something went wrong");
+    alert("Something went wrong")
   }
 };
 
-export const getAllTaskById = async () => {
+export const getAllTaskById = async (userId) => {
   try { 
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    const response = await axios(`${backendUrl}/getAllTasks`, {
+    await axios(`${backendUrl}/tasks/${userId}/`, {
+      action: " ",
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    alert("Something went wrong");
-  }
-};
-
-export const getTaskStatusById = async (taskId) => {
-  try {
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    const response = await axios(`${backendUrl}/getStatus`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      params: { taskId },
-    });
-    return response.data.status;
-  } catch (error) {
-    console.log(error);
-    alert("Something went wrong");
-  }
-};
-
-export const updateTaskStatusById = async (taskId, status) => {
-  try {
-    const token = JSON.parse(localStorage.getItem("token"));
-    axios.defaults.headers.common["Authorization"] = token;
-    await axios(`${backendUrl}/updateStatus`, {
-      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       data: JSON.stringify({
-        taskId,
-        status,
+      
       }),
     });
     return;
   } catch (error) {
     console.log(error);
-    alert("Something went wrong");
+    alert("Something went wrong")
   }
 };
+
+
