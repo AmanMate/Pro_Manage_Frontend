@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
-import { getAllTaskById, updateTaskStatusById  } from "../../api/tasks";
+import { getAllTaskById, updateTaskStatusById } from "../../api/tasks";
 import "./Board.css";
 import database1 from "../../assets/icons/database1.png";
-import Group544 from "../../assets/icons/Group544.png";
 import codicon_collapse from "../../assets/icons/codicon_collapse-all.png";
+import stroke1 from "../../assets/icons/up.png";
+import arrowDown2 from "../../assets/icons/down.png";
 import AddTask from "./AddTask";
 
 export default function Board() {
@@ -17,34 +18,27 @@ export default function Board() {
   const [userName, setUserName] = useState("");
   const [dueDateStyles, setDueDateStyles] = useState({});
 
+  const displayNoneFunction = () => {
+    setDisplayNone(!displayNone);
+  };
+
   useEffect(() => {
     const userNameFromStorage = localStorage.getItem("name");
     if (userNameFromStorage) {
-      setUserName(userNameFromStorage.replace(/"/g, ''));
+      setUserName(userNameFromStorage.replace(/"/g, ""));
     }
   }, []);
 
   useEffect(() => {
     const formatDate = (date) => {
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const day = date.getDate();
-      const month = monthNames[date.getMonth()];
-      const year = date.getFullYear();
-      return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
-    };
-
-    const getOrdinalSuffix = (day) => {
-      if (day > 3 && day < 21) return "th";
-      switch (day % 10) {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-        default: return "th";
-      }
+      const options = { month: "long", day: "numeric" };
+      const formattedDate = new Date(date).toLocaleDateString(undefined, options);
+      const isPastDate = new Date(date) < new Date();
+      return { formattedDate, isPastDate };
     };
 
     const now = new Date();
-    setCurrentDate(formatDate(now));
+    setCurrentDate(formatDate(now).formattedDate);
   }, []);
 
   const mapStatus = (apiStatus) => {
@@ -55,6 +49,8 @@ export default function Board() {
     };
     return statusMap[apiStatus.toLowerCase()] || apiStatus.toLowerCase();
   };
+
+  
 
   const getSortedTasks = (tasksToSort, interval) => {
     let sortedTasks = [...tasksToSort];
@@ -94,7 +90,11 @@ export default function Board() {
         try {
           const response = await getAllTaskById(userId);
           console.log("API response:", response);
-          setTasks(response.tasks.map(task => ({...task, status: mapStatus(task.status)})));
+          const mappedTasks = response.tasks.map((task) => ({
+            ...task,
+            status: mapStatus(task.status),
+          }));
+          setTasks(mappedTasks);
         } catch (error) {
           console.error("Failed to fetch tasks", error);
         }
@@ -108,65 +108,130 @@ export default function Board() {
     console.log("Sorted tasks:", sorted);
     setSortedTasks(sorted);
 
+    const newDueDateStyles = {};
     sorted.forEach((task) => {
       const { isPastDate } = formatDate(task.dueDate);
-      setDueDateStyles((prevStyles) => ({
-        ...prevStyles,
-        [task._id]: isPastDate ? "past-date" : "",
-      }));
+      newDueDateStyles[task._id] = isPastDate ? "past-date" : "";
     });
+    setDueDateStyles(newDueDateStyles);
   }, [tasks, sortBy]);
 
   const handleCheckboxChange = (taskId, itemId) => {
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        if (task._id === taskId) {
-          return {
-            ...task,
-            checklistItems: task.checklistItems.map((item) =>
-              item._id === itemId ? { ...item, checked: !item.checked } : item
-            ),
-          };
-        }
-        return task;
-      });
-    });
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === taskId
+          ? {
+              ...task,
+              checklistItems: task.checklistItems.map((item) =>
+                item._id === itemId ? { ...item, checked: !item.checked } : item
+              ),
+            }
+          : task
+      )
+    );
   };
+
+  useEffect(() => {
+    const getOrdinalSuffix = (day) => {
+      if (day > 3 && day < 21) return "th";
+      switch (day % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+      }
+    };
+            
+    const formatDate = (date) => {
+     const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const day = date.getDate();
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+      
+      return `${day}${getOrdinalSuffix(day)} ${month}, ${year}`;
+    };
+
+    const now = new Date();
+    setCurrentDate(formatDate(now));
+  }, []);
 
   const addNewTask = (task) => {
-    setTasks(prevTasks => [...prevTasks, {
-      ...task,
-      _id: task.id,
-      status: "to-do",
-      createdAt: new Date().toISOString()
-    }]);
+    setTasks((prevTasks) => [
+      ...prevTasks,
+      {
+        ...task,
+        _id: task.id,
+        status: "to-do",
+        createdAt: new Date().toISOString(),
+      },
+    ]);
   };
 
-  // Add this mapping function at the top of your file or in a separate utility file
+  const [showSubmenu, setShowSubmenu] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleSubmenu = () => {
+    setShowSubmenu(!showSubmenu);
+  };
+
+  const handleEdit = () => {
+    // Implement edit functionality
+    setShowSubmenu(false);
+  };
+
+  const handleShare = () => {
+    // Implement share functionality
+    setShowSubmenu(false);
+  };
+
+  const handleDelete = () => {
+    // Implement delete functionality
+    setShowSubmenu(false);
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Implement delete confirmation logic
+    setShowModal(false);
+    // Perform deletion action
+  };
+
   const mapStatusToBackend = (frontendStatus) => {
     const statusMap = {
       "to-do": "todo",
       "in-progress": "inprogress",
-      // Add other mappings if needed
     };
     return statusMap[frontendStatus] || frontendStatus;
   };
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      // Convert the frontend status to the backend format
       const backendStatus = mapStatusToBackend(newStatus);
-
-      // Make the API call to update the status
+  
       await updateTaskStatusById(taskId, backendStatus);
-
-      // Update the local state
+  
       const updatedTasks = tasks.map((task) =>
         task._id === taskId ? { ...task, status: newStatus } : task
       );
       setTasks(updatedTasks);
-
-      // Update the due date styles
+  
       if (newStatus === "completed") {
         setDueDateStyles((prevStyles) => ({
           ...prevStyles,
@@ -180,6 +245,17 @@ export default function Board() {
           [taskId]: isPastDate ? "past-date" : "",
         }));
       }
+
+      updatedTasks.forEach((task) => {
+        if (task._id === taskId) {
+          const { isPastDate } = formatDate(task.dueDate);
+          const updatedStyle = newStatus === "completed" ? "completed-date" : (isPastDate ? "past-date" : "");
+          setDueDateStyles((prevStyles) => ({
+            ...prevStyles,
+            [taskId]: updatedStyle,
+          }));
+        }
+      });
     } catch (error) {
       console.error("Failed to update task status", error);
       alert("Failed to update task status. Please try again.");
@@ -191,6 +267,28 @@ export default function Board() {
     const formattedDate = new Date(date).toLocaleDateString(undefined, options);
     const isPastDate = new Date(date) < new Date();
     return { formattedDate, isPastDate };
+  };
+  
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isImageOne, setIsImageOne] = useState(true);
+
+  const handleButtonClick = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    setIsImageOne(!isImageOne);
+  };
+
+  const [checklistVisibility, setChecklistVisibility] = useState({});
+
+  const toggleChecklistVisibility = (taskId) => {
+    setChecklistVisibility((prevVisibility) => ({
+      ...prevVisibility,
+      [taskId]: !prevVisibility[taskId],
+    }));
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -244,96 +342,113 @@ export default function Board() {
               <div className="backlog-board-row1">
                 <h3>{status.replace("-", " ").toUpperCase()}</h3>
                 {status === "to-do" && <AddTask addNewTask={addNewTask} />}
-                <img
-                  onClick={() => setDisplayNone(!displayNone)}
-                  src={codicon_collapse}
-                  alt="collapse"
-                />
+                <button onClick={handleButtonClick} className="collapse-button">
+                  <img src={isImageOne ? codicon_collapse : codicon_collapse} alt="toggle visibility" />
+                </button>
               </div>
               <div className="backlog-board-row2" id={status}>
-                {sortedTasks.filter((task) => task.status.toLowerCase() === status.toLowerCase()).map((task) => (
-                  <div key={task._id} className="card-section">
-                    <div className="priority-edit-row">
-                      <div
-                        className="small-circle"
-                        style={{
-                          backgroundColor:
-                            task.priority === "high"
-                              ? "red"
-                              : task.priority === "moderate"
-                              ? "yellow"
-                              : "green",
-                        }}
-                      ></div>
-                      <div className="priority">{task.priority} Priority</div>
-                      <div className="edit">
-                        <img src={Group544} alt="edit" />
-                      </div>
-                    </div>
-                    <div className="board-row2">
-                      <div className="task-title">{task.title}</div>
-                      <div className="task-owner">
+                {sortedTasks
+                  .filter((task) => task.status.toLowerCase() === status.toLowerCase())
+                  .map((task) => (
+                    <div key={task._id} className="card-section">
+                      <div className="priority-edit-row">
                         <div
-                          className={`owner-circle ${task.assignee && "blue-bg"}`}
-                        >
-                          {task.assignee ? task.assignee[0] : "?"}
-                        </div>
-                        {task.assignee}
-                      </div>
-                      <div className="task-details">{task.details}</div>
-                    </div>
-                    <div className="board-row3">
-                      <div className="checklist">
-                        <div className="checklist-heading">
-                          <h4>Checklist({task.checklistItems.filter((item) => item.checked).length}/{task.checklistItems.length})</h4>
-                        </div>
-                        <div className="checklist-items">
-                          {task.checklistItems.map((item) => (
-                            <div key={item._id}>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={item.checked}
-                                  onChange={() =>
-                                    handleCheckboxChange(task._id, item._id)
-                                  }
-                                />
-                                {item.text}
-                              </label>
+                          className="small-circle"
+                          style={{
+                            backgroundColor:
+                              task.priority === "high"
+                                ? "red"
+                                : task.priority === "moderate"
+                                ? "yellow"
+                                : task.priority === "low"
+                                ? "green"
+                                : "green",
+                          }}
+                        ></div>
+                        <div className="priority">{task.priority.toUpperCase()} PRIORITY</div>
+                        <div className="edit">
+                          <button onClick={toggleSubmenu} className="edit-button">
+                          </button>
+                          {showSubmenu && (
+                            <div className="submenu-Board">
+                              <button onClick={handleEdit}>Edit</button>
+                              <button onClick={handleShare}>Share</button>
+                              <button onClick={handleDelete} className="model-delete-option">Delete</button>
                             </div>
-                          ))}
+                          )}
+                          {showModal && (
+                            <div className="modal-delete">
+                              <div className="modal-content-delete">
+                                <span>Are you sure you want to delete?</span>
+                                <div className="modal-buttons">
+                                  <button onClick={handleConfirmDelete} className="cancel-button-modal">Yes</button>
+                                  <button onClick={handleCloseModal} className="delete-button-model">Cancel</button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
-                      <div className="due-date">
-                        <button className={dueDateStyles[task._id]}>
-                          {formatDate(task.dueDate).formattedDate}
-                        </button>
+                      <div className="board-row2">
+                        <h2 className="task-title">{task.title}</h2>
+                        {/* <div className="task-owner">
+                          {task.assignee}
+                        </div> */}
+                        <div className="task-details">{task.details}</div>
                       </div>
-                    <div className="move-task-buttons">
-                      {status !== "backlog" && (
-                        <button onClick={() => updateTaskStatus(task._id, "backlog")}>
-                          Backlog
-                        </button>
-                      )}
-                      {status !== "to-do" && (
-                        <button onClick={() => updateTaskStatus(task._id, "to-do")}>
-                          To-Do
-                        </button>
-                      )}
-                      {status !== "in-progress" && (
-                        <button onClick={() => updateTaskStatus(task._id, "in-progress")}>
-                        Progress
-                        </button>
-                      )}
-                      {status !== "completed" && (
-                        <button onClick={() => updateTaskStatus(task._id, "completed")}>
-                          Done
-                        </button>
-                      )}
+                      <div className="board-row3">
+                        <div className="checklist">
+                          <div className="checklist-heading">
+                            <p>Checklist({task.checklistItems.filter((item) => item.checked).length}/{task.checklistItems.length})</p>
+                            <button className="hide" onClick={() => toggleChecklistVisibility(task._id)}>
+                              <img src={checklistVisibility[task._id] ? stroke1 : arrowDown2} alt={checklistVisibility[task._id] ? "Hide" : "Unhide"} />
+                            </button>
+                          </div>
+                          {checklistVisibility[task._id] && (
+                            <div className="checklist-items-board">
+                              {task.checklistItems.map((item) => (
+                                <div key={item._id} className="checklist-item-board">
+                                  <input
+                                    type="checkbox"
+                                    checked={item.checked}
+                                    onChange={() => handleCheckboxChange(task._id, item._id)}
+                                  />
+                                  <label>{item.text}</label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="due-date">
+                      <button className={`due-date-button ${dueDateStyles[task._id]}`}>
+                        {formatDate(task.dueDate).formattedDate}
+                      </button>
+                      </div>
+                      <div className="move-task-buttons">
+                        {status !== "backlog" && (
+                          <button onClick={() => updateTaskStatus(task._id, "backlog")}>
+                            Backlog
+                          </button>
+                        )}
+                        {status !== "to-do" && (
+                          <button onClick={() => updateTaskStatus(task._id, "to-do")}>
+                            To-Do
+                          </button>
+                        )}
+                        {status !== "in-progress" && (
+                          <button onClick={() => updateTaskStatus(task._id, "in-progress")}>
+                            Progress
+                          </button>
+                        )}
+                        {status !== "completed" && (
+                          <button onClick={() => updateTaskStatus(task._id, "completed")}>
+                            Done
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           ))}
