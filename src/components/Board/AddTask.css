@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translate(77px, 5px);
+    transform: translate(137px, 1px);
 }
 
 .add-task img {
@@ -97,24 +97,20 @@
 }
 
 .checklist-items {
+    padding-left: 5px;
     width: 639px;
-    height: 130px;
-    overflow-y:scroll hidden;
+    height: 140px;
+    overflow-y: scroll ;
+    /* overflow-x: scroll hidden; */
     margin-top: 10px;
 }
 
-.checklist-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    width: 649px;
-    transform: translate(-2px, 10px);
-}
+/*  */
 
 .checklist-item .checklist-input {
     position: relative;
     display: inline-block;
-    width: calc(100% - 30px);
+    width: 629px;
     height: 50px;
     border: 1px solid #E2E2E2;
     border-radius: 11px;
@@ -129,8 +125,7 @@
     gap: 0px;
     border-radius: 6px 0px 0px 0px;
     border: 2px 0px 0px 0px;
-    opacity: 0px;
-    transform: translate(29px, 5px);
+    transform: translate(29px, 4px);
 }
 
 .checklist-item .checklist-input input[type="text"] {
@@ -141,7 +136,7 @@
     gap: 10px;
     border-radius: 12px;
     border: 1px solid #fff;
-    transform: translate(84px, 0px);
+    transform: translate(74px, 0px);
 }
 
 .checklist-input {
@@ -170,14 +165,13 @@
     justify-content: center;
     background-image: url("../../assets/icons/Delete.png");
     background-size: 17px;
-    transform: translate(-28px, 18px);
+    transform: translate(-28px, 16px);
 }
 
 .add-new-checklist-item {
     width: 100px;
     height: 19px;
     gap: 10px;
-    opacity: 0px;
     color: #767575;
     background-color: #fff;
     border: none;
